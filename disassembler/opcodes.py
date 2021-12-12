@@ -17,7 +17,7 @@ OPCODE_TABLE = {
 	b'\x08': [['*nop', [], '\t\t\t; nonstandard no op'], []],
 	b'\x09': [['dad', ['B'], '\t\t\t; HL = HL + BC; set flags CY'], []],
 	b'\x0A': [['ldax', ['B'], '\t\t\t; A := (BC)'], []],
-	b'\x0B': [['dcx', ['B'], '\t\t\t; BC = BC + 1'], []],
+	b'\x0B': [['dcx', ['B'], '\t\t\t; BC = BC - 1'], []],
 	b'\x0C': [['inr', ['C'], '\t\t\t; C := C + 1; set flags Z, S, P, AC'], []],
 	b'\x0D': [['dcr', ['C'], '\t\t\t; C := C - 1; set flags Z, S, P, AC'], []],
 	b'\x0E': [['mvi', ['C', '{0}'], '\t\t; C := data:{0}'], [1]],
@@ -208,5 +208,5 @@ OPCODE_TABLE = {
 	b'\xFB': [['ei', [], '\t\t\t; "special"'], []],
 	b'\xFC': [['cm', ['{0}'], '\t\t\t; if M, call addr:{0}'], [2]],
 	b'\xFE': [['cpi', ['{0}'], '\t\t\t; A - data:{0} (compare immediate)'], [1]],
-	b'\xFF': [['rst', ['7'], '\t\t\t; call $38'], []],
+	b'\xFF': [['rst', ['7'], '\t\t\t; quick call addr:38'], []],
 }
