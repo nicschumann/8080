@@ -56,6 +56,7 @@ OPCODE_TYPES = {
 
 	'call': 'call',
 	'cnz': 'call',
+	'cnc': 'call',
 	'cpe': 'call',
 	'cz': 'call',
 	'cm': 'call',
