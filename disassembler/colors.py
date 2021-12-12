@@ -6,7 +6,7 @@ colorama.init(autoreset=True)
 COLOR_TABLE = {
 	# opcode colors
 	'nop': Style.DIM,
-	'misc': Fore.MAGENTA,
+	'misc': Fore.BLUE,
 	'jump': Style.BRIGHT + Fore.CYAN,
 	'call': Style.BRIGHT + Fore.MAGENTA,
 	'lsi-8bit': '',
@@ -36,10 +36,14 @@ COLOR_TABLE = {
 
 OPCODE_TYPES = {
 	'nop': 'nop',
+	'*nop': 'nop',
+	'rim': 'nop',
+	'sim': 'nop',
 
 	'in': 'misc',
 	'ei': 'misc',
 	'out': 'misc',
+	'hlt': 'misc',
 
 	'jmp': 'jump',
 	'jm': 'jump',
@@ -47,15 +51,24 @@ OPCODE_TYPES = {
 	'jz': 'jump',
 	'jnz': 'jump',
 	'jnc': 'jump',
+	'jpo': 'jump',
 	'pchl': 'jump',
 
 	'call': 'call',
 	'cnz': 'call',
+	'cpe': 'call',
 	'cz': 'call',
+	'cm': 'call',
 	'ret': 'call',
 	'rnz': 'call',
+	'rpo': 'call',
 	'rz': 'call',
+	'rc': 'call',
+	'rp': 'call',
+	'rm': 'call',
 	'rnc': 'call',
+
+	'rst': 'call',
 
 	'push': 'lsi-16bit',
 	'pop': 'lsi-16bit',
@@ -65,6 +78,7 @@ OPCODE_TYPES = {
 	'xthl': 'lsi-16bit',
 	'lhld': 'lsi-16bit',
 	'ldax': 'lsi-16bit',
+	'stax': 'lsi-16bit',
 
 	'mov': 'lsi-8bit',
 	'mvi': 'lsi-8bit',
@@ -80,19 +94,25 @@ OPCODE_TYPES = {
 	'ani': 'al-8bit',
 	'adi': 'al-8bit',
 	'add': 'al-8bit',
+	'adc': 'al-8bit',
 	'cmp': 'al-8bit',
+	'cmc': 'al-8bit',
+	'cma': 'al-8bit',
 	'daa': 'al-8bit',
 	'dcr': 'al-8bit',
 	'ora': 'al-8bit',
 	'ori': 'al-8bit',
 	'rrc': 'al-8bit',
 	'rlc': 'al-8bit',
+	'rar': 'al-8bit',
 	'cpi': 'al-8bit',
 	'xra': 'al-8bit',
 	'sub': 'al-8bit',
 	'sbi': 'al-8bit',
+	'sbb': 'al-8bit',
 	'sui': 'al-8bit',
-	'stc': 'al-8bit'
+	'stc': 'al-8bit',
+	'xri': 'al-8bit',
 }
 
 def set_format_and_color(line_number, dissasembly, argument_data):
