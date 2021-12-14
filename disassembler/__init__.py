@@ -14,7 +14,7 @@ def disassemble(file):
 
 	i = 0
 	while opcode:
-		line_number = file.tell()
+		line_number = file.tell() - 1
 
 		try:
 			dissasembly, argsizes = OPCODE_TABLE[opcode]
