@@ -17,6 +17,8 @@ def get_initial_state():
 	state.REG_UINT8[ U8.C ] = 0x02
 	state.REG_UINT8[ U8.D ] = 0x03
 	state.REG_UINT8[ U8.E ] = 0x04
+	state.REG_UINT8[ U8.H ] = 0x05
+	state.REG_UINT8[ U8.L ] = 0x06
 
 	return state
 
@@ -24,7 +26,12 @@ def get_initial_state():
 	'opcode,register', 
 	[
 		(0x80, U8.B), 
-		(0x81, U8.C)
+		(0x81, U8.C),
+		(0x82, U8.D),
+		(0x83, U8.E),
+		(0x84, U8.H),
+		(0x85, U8.L),
+		(0x87, U8.A) 
 	]
 )
 def test_op_add(opcode, register):
@@ -40,7 +47,7 @@ def test_op_add(opcode, register):
 
 	A_is_sum_of_A_and_REG = state.REG_UINT8[ U8.A ] == initial_state.REG_UINT8[ U8.A ] + initial_state.REG_UINT8[ register ]
 	PC_has_incremented = state.REG_UINT16[ U16.PC ] == initial_state.REG_UINT16[ U16.PC ] + 1
-	REG_is_unchanged = state.REG_UINT8[ register ] == initial_state.REG_UINT8[ register ]
+	REG_is_unchanged = (U8.A == register) or (state.REG_UINT8[ register ] == initial_state.REG_UINT8[ register ])
 	MEM_is_unchanged = np.all(state.MEM == initial_state.MEM)
 
 

@@ -28,8 +28,8 @@ def subop_setflags(result: int, state: State):
 # naming convention: op_[canonical opname]_0x[opcode hex]
 # ----------------------------------------------------------------
 
-...
-
+def op_add_M_0x86(state: State):
+	pass
 
 # ---- optemplates -----------------------------------------------
 # These functions are simple higher-order templates that 
@@ -51,5 +51,11 @@ def optemplate_add(reg: U8):
 
 ARITHMETIC_OPCODES = {
 	0x80: optemplate_add( U8.B ),
-	0x81: optemplate_add( U8.C )
+	0x81: optemplate_add( U8.C ),
+	0x82: optemplate_add( U8.D ),
+	0x83: optemplate_add( U8.E ),
+	0x84: optemplate_add( U8.H ),
+	0x85: optemplate_add( U8.L ),
+	0x86: op_add_M_0x86, # NOTE(Nic): Needs Tests
+	0x87: optemplate_add( U8.A ), # NOTE(Nic): Needs Tests
 }
