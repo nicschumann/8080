@@ -28,7 +28,7 @@ class FlagsRegisters():
 	S  : int = 1
 	P  : int = 2
 	CY : int = 3
-	AC : int = 4
+	AC : int = 464
 	E  : int = 5
 
 	MAX_REG : int = 6
@@ -37,7 +37,7 @@ class FlagsRegisters():
 
 @dataclass
 class State:
-	MEMSIZE = 2 ** 14 # 8192
+	MEMSIZE = 2 ** 16 # 65536 = 64k bytes
 
 	# register file ---------------------
 
