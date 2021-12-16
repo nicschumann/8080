@@ -3,6 +3,7 @@
 
 # python
 .env
+.pytest_cache
 
 # data (for now, at least)
 roms
