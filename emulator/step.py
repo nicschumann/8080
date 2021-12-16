@@ -47,6 +47,10 @@ def decode_op(state):
 
 
 def step(state: State):
+	# fetch & decode
 	op = decode_op(state)
-	op(state)
 	state.REG_UINT16[ U16.PC ] += 0x01
+
+	# execute & writeback
+	op(state)
+	
