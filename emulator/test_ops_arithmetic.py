@@ -42,7 +42,6 @@ def test_op_add(opcode, register):
 	initial_state.MEM[ :opcodes_to_test.shape[0] ] = opcodes_to_test
 	
 	state = initial_state.clone()
-
 	step(state)
 
 	A_is_sum_of_A_and_REG = state.REG_UINT8[ U8.A ] == initial_state.REG_UINT8[ U8.A ] + initial_state.REG_UINT8[ register ]
@@ -55,3 +54,30 @@ def test_op_add(opcode, register):
 	assert PC_has_incremented, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: PC\' =/= PC + 1' 
 	assert REG_is_unchanged, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: REG\' =/= REG' 
 	assert MEM_is_unchanged, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: MEM\' =/= MEM' 
+
+
+def test_op_add_M():
+	initial_state = get_initial_state()
+	opcodes_to_test = np.array([0x86])
+
+	initial_state.REG_UINT8[ U8.H ] = 0x05
+	initial_state.REG_UINT8[ U8.L ] = 0x06
+	initial_state.MEM[ :opcodes_to_test.shape[0] ] = opcodes_to_test
+	initial_state.MEM[ 0x0506 ] = 0x10
+
+	state = initial_state.clone()
+	step(state)
+
+	A_is_sum_of_A_and_MEM = state.REG_UINT8[ U8.A ] == initial_state.REG_UINT8[ U8.A ] + initial_state.MEM[ 0x0506 ]
+	PC_has_incremented = state.REG_UINT16[ U16.PC ] == initial_state.REG_UINT16[ U16.PC ] + 1
+	MEM_is_unchanged = np.all(state.MEM == initial_state.MEM)
+
+	assert A_is_sum_of_A_and_MEM, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: A\' =/= A + MEM' 	
+	assert PC_has_incremented, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: PC\' =/= PC + 1' 
+	assert MEM_is_unchanged, f'[postcondition] op {hex(state.MEM[state.REG_UINT16[U16.PC - 1]])}: MEM\' =/= MEM' 
+
+
+
+
+
+

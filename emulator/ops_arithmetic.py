@@ -29,7 +29,10 @@ def subop_setflags(result: int, state: State):
 # ----------------------------------------------------------------
 
 def op_add_M_0x86(state: State):
-	pass
+	target_address = (state.REG_UINT8[ U8.H ] << 8) | state.REG_UINT8[ U8.L ]
+	result = state.REG_UINT8[ U8.A ] + state.MEM[ target_address ]
+	subop_setflags(result, state)
+	state.REG_UINT8[ U8.A ] = result & 0xFF
 
 # ---- optemplates -----------------------------------------------
 # These functions are simple higher-order templates that 
