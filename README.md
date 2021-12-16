@@ -2,6 +2,14 @@
 
 A python-based Intel `8080` disassembler and emulator. All opcodes tested.
 
+## Running
+
+The base directory needs to be part of the `PYTHONPATH`, so run this script as a module:
+
+```sh
+python -m main # rather than python main.py
+```
+
 ## References
 
 - [Matrix of 256 possible 1-byte instructions for the 8080](https://pastraiser.com/cpu/i8080/i8080_opcodes.html). Super useful overview; useful reference for opcode coverage, disassembler, and emulator.

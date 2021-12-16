@@ -4,6 +4,20 @@
 # - http://www.emulator101.com/8080-by-opcode.html
 # also: https://pastraiser.com/cpu/i8080/i8080_opcodes.html
 
+
+class Opcode:
+	def __init__(self):
+		pass 
+		
+	def step(self, state):
+		pass
+
+	def print(self):
+		pass
+
+
+
+
 OPCODE_TABLE = {
 			 # format string for printing opcode, structure of args to read.
 	b'\x00': [['nop', [], ''], []],

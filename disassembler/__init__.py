@@ -1,4 +1,5 @@
-from .opcodes import OPCODE_TABLE
+from emulator.opcodes import OPCODE_TABLE
+
 from .colors import set_format_and_color
 
 def set_format(line_number, dissasembly, argument_data):
