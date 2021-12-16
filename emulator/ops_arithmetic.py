@@ -11,12 +11,13 @@ from .state import FlagsRegisters as F
 # naming convention: subop_[name]
 # ----------------------------------------------------------------
 
-def subop_setflags(result: int, state: State):
+def subop_setflags_add(result: int, state: State):
 	"""result may be a 16-bit uint"""
 	state.FLAGS[ F.Z ] = True if result & 0xFF == 0 else False
 	state.FLAGS[ F.S ] = True if result & 0x80 > 0 else False
 	state.FLAGS[ F.P ] = True if (result & 0xFF) % 2 == 0 else False 
 	state.FLAGS[ F.CY ] = True if result > 0xFF else False
+	# NOTE(Nic): AC is not implemented in this emulator yet...
 
 
 
@@ -31,7 +32,13 @@ def subop_setflags(result: int, state: State):
 def op_add_M_0x86(state: State):
 	target_address = (state.REG_UINT8[ U8.H ] << 8) | state.REG_UINT8[ U8.L ]
 	result = state.REG_UINT8[ U8.A ] + state.MEM[ target_address ]
-	subop_setflags(result, state)
+	subop_setflags_add(result, state)
+	state.REG_UINT8[ U8.A ] = result & 0xFF
+
+def op_adc_M_0x8E(state: State):
+	target_address = (state.REG_UINT8[ U8.H ] << 8) | state.REG_UINT8[ U8.L ]
+	result = state.REG_UINT8[ U8.A ] + state.MEM[ target_address ] + state.FLAGS[ F.CY ]
+	subop_setflags_add(result, state)
 	state.REG_UINT8[ U8.A ] = result & 0xFF
 
 # ---- optemplates -----------------------------------------------
@@ -44,10 +51,19 @@ def op_add_M_0x86(state: State):
 # ----------------------------------------------------------------
 
 def optemplate_add(reg: U8):
-	def op(state : State):
+	def op(state: State):
 		result = state.REG_UINT8[ U8.A ] + state.REG_UINT8[reg]
-		subop_setflags(result, state)
+		subop_setflags_add(result, state)
 		state.REG_UINT8[ U8.A ] = result & 0xFF # cast result to a uint8_t
+
+	return op
+
+
+def optemplate_adc(reg: U8):
+	def op(state: State):
+		result = state.REG_UINT8[ U8.A ] + state.REG_UINT8[reg] + state.FLAGS[ F.CY ]
+		subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF
 
 	return op
 
@@ -59,6 +75,15 @@ ARITHMETIC_OPCODES = {
 	0x83: optemplate_add( U8.E ),
 	0x84: optemplate_add( U8.H ),
 	0x85: optemplate_add( U8.L ),
-	0x86: op_add_M_0x86, # NOTE(Nic): Needs Tests
-	0x87: optemplate_add( U8.A ), # NOTE(Nic): Needs Tests
+	0x86: op_add_M_0x86,
+	0x87: optemplate_add( U8.A ),
+
+	0x88: optemplate_adc( U8.B ),
+	0x89: optemplate_adc( U8.C ),
+	0x8A: optemplate_adc( U8.D ),
+	0x8B: optemplate_adc( U8.E ),
+	0x8C: optemplate_adc( U8.H ),
+	0x8D: optemplate_adc( U8.L ),
+	0x8E: op_adc_M_0x8E,
+	0x8F: optemplate_adc( U8.A ),
 }
