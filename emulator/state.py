@@ -13,6 +13,17 @@ class Uint8Registers():
 
 	MAX_REG : int = 7
 
+	@staticmethod
+	def to_string(reg: int):
+		if reg == 0: return 'A'
+		if reg == 1: return 'B'
+		if reg == 2: return 'C'
+		if reg == 3: return 'D'
+		if reg == 4: return 'E'
+		if reg == 5: return 'H'
+		if reg == 6: return 'L'
+		else: return f'(No Such U8 Register: {reg})'
+
 
 @dataclass
 class Uint16Registers():
@@ -20,6 +31,12 @@ class Uint16Registers():
 	PC : int = 1
 
 	MAX_REG : int = 2
+
+	@staticmethod
+	def to_string(reg: int):
+		if reg == 0: return 'SP'
+		if reg == 1: return 'PC'
+		else: return f'(No Such U16 Register: {reg})'
 
 
 @dataclass

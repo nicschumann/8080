@@ -1,4 +1,4 @@
-from emulator.opcodes import OPCODE_TABLE
+from emulator.opcodes import OPCODE_TABLE, NEW_OPCODE_TABLE
 
 from .colors import set_format_and_color
 
@@ -18,7 +18,13 @@ def disassemble(file):
 		line_number = file.tell() - 1
 
 		try:
-			dissasembly, argsizes = OPCODE_TABLE[opcode]
+			if opcode in NEW_OPCODE_TABLE:
+				int_opcode = int.from_bytes(opcode, 'big')
+				op = NEW_OPCODE_TABLE[opcode]
+				dissasembly, argsizes = op.disassembly_data()
+
+			else:
+				dissasembly, argsizes = OPCODE_TABLE[opcode]
 
 		except KeyError:
 			print(f'\n[Disassembler Error] Unrecognized opcode: {opcode.hex()}')
@@ -30,7 +36,7 @@ def disassemble(file):
 
 		try: 
 			line = set_format_and_color(line_number, dissasembly, arguments)
-			print(line);
+			print(line)
 			opcode = file.read(1)
 			i += 1
 

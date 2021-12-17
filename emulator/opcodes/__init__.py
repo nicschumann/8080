@@ -4,19 +4,22 @@
 # - http://www.emulator101.com/8080-by-opcode.html
 # also: https://pastraiser.com/cpu/i8080/i8080_opcodes.html
 
+from emulator.state import State
+from emulator.state import Uint8Registers as U8
+from emulator.state import Uint16Registers as U16
+from emulator.state import FlagsRegisters as F
 
-class Opcode:
-	def __init__(self):
-		pass 
-		
-	def step(self, state):
-		pass
-
-	def print(self):
-		pass
+from .datatransfer import *
+from .machine import *
 
 
+OPCODE_LIST = [
+	NOP(),
+	LXI_Reg(0x01, U8.B),
+	MOV_Reg_Reg(0x40, U8.B, U8.B)
+]
 
+NEW_OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))
 
 OPCODE_TABLE = {
 			 # format string for printing opcode, structure of args to read.
