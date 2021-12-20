@@ -118,13 +118,69 @@ class MVI_Mem_Imm(Op):
 
 
 
-class LXI_Reg(Op):
-	def __init__(self, code : bytes, r : int):
-		super().__init__(code, 'lxi', [U8.to_string(r), '{1}{0}'], [1,1], '\t\t; B := data:{1}; C := data:{0}')
-		self.r = r
+class LXI_Reg_Imm(Op):
+	def __init__(self, code : bytes, rh : int, rl : int):
+		comment = f'\t\t; {U8.to_string(rh)} := data:{1}; {U8.to_string(rl)} := data:{0}'
+		super().__init__(code, 'lxi', [U8.to_string(rh), '{1}{0}'], [1,1], comment)
+		self.rh = rh
+		self.rl = rl
 
-	# def step(self, state: State):
-	# 	pass
+	def step(self, state: State):
+		low_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] ]
+		high_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] + 0x01 ]
 
-	# def test(self, preop_state: State, postop_state: State):
-	# 	pass
+		state.REG_UINT8[ self.rl ] = low_byte_from_rom
+		state.REG_UINT8[ self.rh ] = high_byte_from_rom
+
+		state.REG_UINT16[ U16.PC ] += 0x02
+
+	def test(self, preop_state: State, postop_state: State):
+		preop_PC = preop_state.REG_UINT16[ U16.PC ]
+		low_byte_from_rom = preop_state.MEM[ preop_PC + 0x01 ]
+		high_byte_from_rom = preop_state.MEM[ preop_PC + 0x02 ]
+
+		RH_is_high_byte = postop_state.REG_UINT8[ self.rh ] == high_byte_from_rom
+		RL_is_low_byte = postop_state.REG_UINT8[ self.rl ] == low_byte_from_rom
+		PC_has_incremented = postop_state.REG_UINT16[ U16.PC ] == preop_PC + 0x03
+
+		assert RH_is_high_byte, f'{U8.to_string(self.rh)}\' =/= MEM[PC + 2]'
+		assert RL_is_low_byte, f'{U8.to_string(self.rl)}\' =/= MEM[PC + 1]'
+		assert PC_has_incremented, f'PC\' =/= PC + 3'
+
+
+
+class LXI_SP(Op):
+	def __init__(self, code: int):
+		comment = '\t\t; SP[8:16] := data:{1}; SP[0:8] := data:{0}'
+		super().__init__(code, 'lxi', ['SP', '{1}{0}'], [1,1], comment)
+
+	def step(self, state: State):
+		low_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] ]
+		high_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] + 0x01 ]
+
+		data = (high_byte_from_rom << 8) | low_byte_from_rom
+		state.REG_UINT16[ U16.SP ] = data
+
+		state.REG_UINT16[ U16.PC ] += 0x02
+
+	def test(self, preop_state: State, postop_state: State):
+		preop_PC = preop_state.REG_UINT16[ U16.PC ]
+		low_byte_from_rom = preop_state.MEM[ preop_PC + 0x01 ]
+		high_byte_from_rom = preop_state.MEM[ preop_PC + 0x02 ]
+		data = (high_byte_from_rom << 8) | low_byte_from_rom
+
+		SP_is_ROM = postop_state.REG_UINT16[U16.SP] == data
+		PC_has_incremented = postop_state.REG_UINT16[ U16.PC ] == preop_PC + 0x03
+
+		assert SP_is_ROM, f'SP\' =/= MEM[PC+1 : PC+2]'
+		assert PC_has_incremented, f'PC\' =/= PC + 3'
+
+
+
+
+
+
+
+
+
+

@@ -15,7 +15,12 @@ from .machine import *
 
 OPCODE_LIST = [
 	NOP(),
-	# LXI_Reg(0x01, U8.B),
+	# LXI BLOCK: Load Extended Immediate Values
+	LXI_Reg_Imm(0x01, U8.B, U8.C),
+	LXI_Reg_Imm(0x11, U8.D, U8.E),
+	LXI_Reg_Imm(0x21, U8.H, U8.L),
+	LXI_SP(0x31),
+	
 
 	# MVI BLOCK: Move Immediate Values
 	MVI_Reg_Imm(0x06, U8.B),
