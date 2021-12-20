@@ -10,6 +10,12 @@ The base directory needs to be part of the `PYTHONPATH`, so run this script as a
 python -m main # rather than python main.py
 ```
 
+Similarly, run `pytest` as a module to go test:
+
+```sh
+python -m pytest -v # -v optional; shows individual test identities
+```
+
 ## References
 
 - [Matrix of 256 possible 1-byte instructions for the 8080](https://pastraiser.com/cpu/i8080/i8080_opcodes.html). Super useful overview; useful reference for opcode coverage, disassembler, and emulator.

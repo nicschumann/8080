@@ -13,7 +13,10 @@ from emulator.step import step
 
 def get_initial_state():
 	state = State()
+	
 	state.REG_UINT16[ U16.PC ] = 0x0
+
+
 	state.REG_UINT8[ U8.A ] = 0x10
 	state.REG_UINT8[ U8.B ] = 0x01
 	state.REG_UINT8[ U8.C ] = 0x02
@@ -21,6 +24,8 @@ def get_initial_state():
 	state.REG_UINT8[ U8.E ] = 0x04
 	state.REG_UINT8[ U8.H ] = 0x05
 	state.REG_UINT8[ U8.L ] = 0x06
+
+	state.MEM = np.random.randint(0, 256, size=len(state.MEM), dtype=np.uint8)
 
 	return state
 

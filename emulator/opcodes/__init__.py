@@ -15,8 +15,92 @@ from .machine import *
 
 OPCODE_LIST = [
 	NOP(),
-	LXI_Reg(0x01, U8.B),
-	MOV_Reg_Reg(0x40, U8.B, U8.B)
+	# LXI_Reg(0x01, U8.B),
+
+	# MVI BLOCK: Move Immediate Values
+	MVI_Reg_Imm(0x06, U8.B),
+	MVI_Reg_Imm(0x16, U8.D),
+	MVI_Reg_Imm(0x26, U8.H),
+	MVI_Mem_Imm(0x36),
+	MVI_Reg_Imm(0x0E, U8.C),
+	MVI_Reg_Imm(0x1E, U8.E),
+	MVI_Reg_Imm(0x2E, U8.L),
+	MVI_Reg_Imm(0x3E, U8.A),
+
+	# MOV BLOCK: 0x40 – 0x7F (with HLT at 0x76)
+	MOV_Reg_Reg(0x40, U8.B, U8.B),
+	MOV_Reg_Reg(0x41, U8.B, U8.C),
+	MOV_Reg_Reg(0x42, U8.B, U8.D),
+	MOV_Reg_Reg(0x43, U8.B, U8.E),
+	MOV_Reg_Reg(0x44, U8.B, U8.H),
+	MOV_Reg_Reg(0x45, U8.B, U8.L),
+	MOV_Reg_Mem(0x46, U8.B),
+	MOV_Reg_Reg(0x47, U8.B, U8.A),
+
+	MOV_Reg_Reg(0x48, U8.C, U8.B),
+	MOV_Reg_Reg(0x49, U8.C, U8.C),
+	MOV_Reg_Reg(0x4A, U8.C, U8.D),
+	MOV_Reg_Reg(0x4B, U8.C, U8.E),
+	MOV_Reg_Reg(0x4C, U8.C, U8.H),
+	MOV_Reg_Reg(0x4D, U8.C, U8.L),
+	MOV_Reg_Mem(0x4E, U8.C),
+	MOV_Reg_Reg(0x4F, U8.C, U8.A),
+
+	MOV_Reg_Reg(0x50, U8.D, U8.B),
+	MOV_Reg_Reg(0x51, U8.D, U8.C),
+	MOV_Reg_Reg(0x52, U8.D, U8.D),
+	MOV_Reg_Reg(0x53, U8.D, U8.E),
+	MOV_Reg_Reg(0x54, U8.D, U8.H),
+	MOV_Reg_Reg(0x55, U8.D, U8.L),
+	MOV_Reg_Mem(0x56, U8.D),
+	MOV_Reg_Reg(0x57, U8.D, U8.A),
+
+	MOV_Reg_Reg(0x58, U8.E, U8.B),
+	MOV_Reg_Reg(0x59, U8.E, U8.C),
+	MOV_Reg_Reg(0x5A, U8.E, U8.D),
+	MOV_Reg_Reg(0x5B, U8.E, U8.E),
+	MOV_Reg_Reg(0x5C, U8.E, U8.H),
+	MOV_Reg_Reg(0x5D, U8.E, U8.L),
+	MOV_Reg_Mem(0x5E, U8.E),
+	MOV_Reg_Reg(0x5F, U8.E, U8.A),
+
+	MOV_Reg_Reg(0x60, U8.H, U8.B),
+	MOV_Reg_Reg(0x61, U8.H, U8.C),
+	MOV_Reg_Reg(0x62, U8.H, U8.D),
+	MOV_Reg_Reg(0x63, U8.H, U8.E),
+	MOV_Reg_Reg(0x64, U8.H, U8.H),
+	MOV_Reg_Reg(0x65, U8.H, U8.L),
+	MOV_Reg_Mem(0x66, U8.H),
+	MOV_Reg_Reg(0x67, U8.H, U8.A),
+
+	MOV_Reg_Reg(0x68, U8.L, U8.B),
+	MOV_Reg_Reg(0x69, U8.L, U8.C),
+	MOV_Reg_Reg(0x6A, U8.L, U8.D),
+	MOV_Reg_Reg(0x6B, U8.L, U8.E),
+	MOV_Reg_Reg(0x6C, U8.L, U8.H),
+	MOV_Reg_Reg(0x6D, U8.L, U8.L),
+	MOV_Reg_Mem(0x6E, U8.L),
+	MOV_Reg_Reg(0x6F, U8.L, U8.A),
+
+	MOV_Mem_Reg(0x70, U8.B),
+	MOV_Mem_Reg(0x71, U8.C),
+	MOV_Mem_Reg(0x72, U8.D),
+	MOV_Mem_Reg(0x73, U8.E),
+	MOV_Mem_Reg(0x74, U8.H),
+	MOV_Mem_Reg(0x75, U8.L),
+	# MOV_Mem_Reg(0x70, U8.L), # Put HLT here.
+	MOV_Mem_Reg(0x77, U8.A),
+
+	MOV_Reg_Reg(0x78, U8.A, U8.B),
+	MOV_Reg_Reg(0x79, U8.A, U8.C),
+	MOV_Reg_Reg(0x7A, U8.A, U8.D),
+	MOV_Reg_Reg(0x7B, U8.A, U8.E),
+	MOV_Reg_Reg(0x7C, U8.A, U8.H),
+	MOV_Reg_Reg(0x7D, U8.A, U8.L),
+	MOV_Reg_Mem(0x7E, U8.A),
+	MOV_Reg_Reg(0x7F, U8.A, U8.A),
+
+
 ]
 
 NEW_OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))

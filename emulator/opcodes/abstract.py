@@ -27,7 +27,7 @@ class Op:
 		return np.all(preop_state.MEM == postop_state.MEM)
 
 
-	def subop_addr_from_H_and_L(self, state: State):
+	def subop_addr_from_HL(self, state: State):
 		return (state.REG_UINT8[ U8.H ] << 8) | state.REG_UINT8[ U8.L ]
 
 
@@ -38,7 +38,7 @@ class Op:
 		assert False, f"[{self.code}] {self.name}: test unimplemented!"
 
 	def get_name(self):
-		return f'{hex(self.code)}: {self.name}'
+		return f'{hex(self.code)}: {self.name} {", ".join(self.str_args)}'
 
 
 def UnimplementedOp(Op):
