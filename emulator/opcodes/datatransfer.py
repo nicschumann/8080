@@ -158,7 +158,7 @@ class LXI_SP(Op):
 		low_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] ]
 		high_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] + 0x01 ]
 
-		data = (high_byte_from_rom << 8) | low_byte_from_rom
+		data = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
 		state.REG_UINT16[ U16.SP ] = data
 
 		state.REG_UINT16[ U16.PC ] += 0x02
@@ -167,7 +167,7 @@ class LXI_SP(Op):
 		preop_PC = preop_state.REG_UINT16[ U16.PC ]
 		low_byte_from_rom = preop_state.MEM[ preop_PC + 0x01 ]
 		high_byte_from_rom = preop_state.MEM[ preop_PC + 0x02 ]
-		data = (high_byte_from_rom << 8) | low_byte_from_rom
+		data = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
 
 		SP_is_ROM = postop_state.REG_UINT16[U16.SP] == data
 		PC_has_incremented = postop_state.REG_UINT16[ U16.PC ] == preop_PC + 0x03
@@ -175,6 +175,58 @@ class LXI_SP(Op):
 		assert SP_is_ROM, f'SP\' =/= MEM[PC+1 : PC+2]'
 		assert PC_has_incremented, f'PC\' =/= PC + 3'
 
+
+class LDA(Op):
+	def __init__(self, code: int):
+		comment = '\t\t; A := (addr:{1}{0})'
+		super().__init__(code, 'lda', ['{1}{0}'], [1,1], comment)
+
+	def step(self, state: State):
+		low_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] ]
+		high_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] + 0x01 ]
+		addr = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
+
+		state.REG_UINT8[ U8.A ] = state.MEM[ addr ]
+		state.REG_UINT16[ U16.PC ] += 0x02
+
+	def test(self, preop_state: State, postop_state: State):
+		preop_PC = preop_state.REG_UINT16[ U16.PC ]
+		low_byte_from_rom = preop_state.MEM[ preop_PC + 0x01 ]
+		high_byte_from_rom = preop_state.MEM[ preop_PC + 0x02 ]
+		addr = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
+
+		A_is_mem = postop_state.REG_UINT8[U8.A] == preop_state.MEM[addr]
+		PC_has_incremented = postop_state.REG_UINT16[ U16.PC ] == preop_PC + 0x03
+
+		assert A_is_mem, f'A\' =/= MEM[addr]'
+		assert PC_has_incremented, f'PC\' =/= PC + 3'
+
+
+class STA(Op):
+	def __init__(self, code: int):
+		comment = '\t\t; (addr:{1}{0}) := A'
+		super().__init__(code, 'sta', ['{1}{0}'], [1,1], comment)
+
+	def step(self, state: State):
+		low_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] ]
+		high_byte_from_rom = state.MEM[ state.REG_UINT16[ U16.PC ] + 0x01 ]
+		addr = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
+
+		state.MEM[ addr ] = state.REG_UINT8[ U8.A ]
+		state.REG_UINT16[ U16.PC ] += 0x02
+
+	def test(self, preop_state: State, postop_state: State):
+		preop_PC = preop_state.REG_UINT16[ U16.PC ]
+		low_byte_from_rom = preop_state.MEM[ preop_PC + 0x01 ]
+		high_byte_from_rom = preop_state.MEM[ preop_PC + 0x02 ]
+		addr = self.subop_u8_pair_to_u16(high_byte_from_rom, low_byte_from_rom)
+
+		MEM_is_A = postop_state.MEM[addr] == preop_state.REG_UINT8[U8.A]
+		PC_has_incremented = postop_state.REG_UINT16[ U16.PC ] == preop_PC + 0x03
+
+		assert MEM_is_A, f'MEM[addr]\' =/= A'
+		assert PC_has_incremented, f'PC\' =/= PC + 3'
+		
 
 
 

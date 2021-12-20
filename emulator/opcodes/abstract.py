@@ -19,26 +19,33 @@ class Op:
 		self.byte_arg_counts = byte_arg_counts
 		self.comment = comment
 
-	def disassembly_data(self):
-		return [self.name, self.str_args, self.comment], self.byte_arg_counts
-
-
-	def mem_invariant(self, preop_state: State, postop_state: State):
-		return np.all(preop_state.MEM == postop_state.MEM)
-
-
-	def subop_addr_from_HL(self, state: State):
-		return (state.REG_UINT8[ U8.H ] << 8) | state.REG_UINT8[ U8.L ]
-
-
 	def step(self, state: State):
 		assert False, f"[{self.code}] {self.name}: step unimplemented!"
 
 	def test(self, preop_state: State, postop_state: State):
 		assert False, f"[{self.code}] {self.name}: test unimplemented!"
 
+	
+
+	def disassembly_data(self):
+		return [self.name, self.str_args, self.comment], self.byte_arg_counts
+
 	def get_name(self):
 		return f'{hex(self.code)}: {self.name} {", ".join(self.str_args)}'
+
+
+	
+	def mem_invariant(self, preop_state: State, postop_state: State):
+		return np.all(preop_state.MEM == postop_state.MEM)
+
+	
+
+	def subop_u8_pair_to_u16(self, high, low):
+		return high << 8 | low
+
+	def subop_addr_from_HL(self, state: State):
+		return self.subop_u8_pair_to_u16(state.REG_UINT8[ U8.H ], state.REG_UINT8[ U8.L ])
+
 
 
 def UnimplementedOp(Op):
