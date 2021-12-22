@@ -22,10 +22,16 @@ OPCODE_LIST = [
 	LXI_SP(0x31),
 
 	# LDA / STA BLOCK: Load and Store the accumulator
+	STAX_Reg(0x02, U8.B, U8.C),
+	STAX_Reg(0x12, U8.D, U8.E),
+	LDAX_Reg(0x0A, U8.B, U8.C),
+	LDAX_Reg(0x1A, U8.D, U8.E),
+	SHLD(0x22),
+	LHLD(0x2A),
 	STA(0x32),
 	LDA(0x3A),
+	XCHG(0xEB),
 
-	
 
 	# MVI BLOCK: Move Immediate Values
 	MVI_Reg_Imm(0x06, U8.B),
@@ -109,6 +115,8 @@ OPCODE_LIST = [
 	MOV_Reg_Reg(0x7D, U8.A, U8.L),
 	MOV_Reg_Mem(0x7E, U8.A),
 	MOV_Reg_Reg(0x7F, U8.A, U8.A),
+
+
 
 
 ]
