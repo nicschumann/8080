@@ -44,6 +44,12 @@ class Op:
 	def subop_u8_pair_to_u16(self, high, low):
 		return high << 8 | low
 
+	def subop_u16_to_u8_pair(self, value):
+		high_bits = value >> 8
+		low_bits = value & 0xFF
+
+		return high_bits, low_bits
+
 	def subop_addr_from_HL(self, state: State):
 		return self.subop_u8_pair_to_u16(state.REG_UINT8[ U8.H ], state.REG_UINT8[ U8.L ])
 

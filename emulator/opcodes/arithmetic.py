@@ -348,5 +348,92 @@ class DCR_Mem(Op):
 		MEM_is_MEM_plus_1 = postop_state.MEM[addr] == (result & 0xFF)
 		
 		assert MEM_is_MEM_plus_1, f'MEM[addr]\' =/= MEM[addr] - 1'
+
+
+class INX_Reg(Op):
+	def __init__(self, code: bytes, rh: int, rl: int):
+		comment_string = f'\t\t\t; ({U8.to_string(rh)}{U8.to_string(rl)}) = ({U8.to_string(rh)}{U8.to_string(rl)}) + 1; no flags set.'
+		super().__init__(code, 'inx', [f'{U8.to_string(rh)}'], [], comment_string)
+		self.rh = rh
+		self.rl = rl
+
+	def step(self, state: State):
+		value = self.subop_u8_pair_to_u16(state.REG_UINT8[self.rh], state.REG_UINT8[self.rl])
+		result = self.subop_add(value, 1)
+		val_h, val_l = self.subop_u16_to_u8_pair(result)
+		state.REG_UINT8[ self.rh ] = val_h & 0xFF
+		state.REG_UINT8[ self.rl ] = val_l & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		value = self.subop_u8_pair_to_u16(preop_state.REG_UINT8[self.rh], preop_state.REG_UINT8[self.rl])
+		result = int(value) + 1
+		val_h = result >> 8
+		val_l = result & 0xFF
+
+		RH_is_high_byte = postop_state.REG_UINT8[self.rh] == val_h 
+		RL_is_low_byte = postop_state.REG_UINT8[self.rl] == val_l
+
 		
+		assert RH_is_high_byte, f'{U8.to_string(self.rh)}{U8.to_string(self.rl)}\' =/= {U8.to_string(self.rh)}{U8.to_string(self.rl)} + 1'
+		assert RL_is_low_byte, f'{U8.to_string(self.rh)}{U8.to_string(self.rl)}\' =/= {U8.to_string(self.rh)}{U8.to_string(self.rl)} + 1'
+	
+
+class INX_SP(Op):
+	def __init__(self, code: bytes ):
+		comment_string = f'\t\t\t; (SP) = (SP) + 1; no flags set.'
+		super().__init__(code, 'inx', [f'SP'], [], comment_string)
+
+	def step(self, state: State):
+		print(state.REG_UINT16[U16.SP])
+		result = self.subop_add(state.REG_UINT16[U16.SP], 1)
+		state.REG_UINT16[ U16.SP ] = result & 0xFFFF
+
+	def test(self, preop_state: State, postop_state: State):
+		SP_has_incremented = postop_state.REG_UINT16[U16.SP] == ((preop_state.REG_UINT16[U16.SP] + 1) & 0xFFFF)
+		assert SP_has_incremented, f'SP\' =/= SP + 1'
+		
+
+class DCX_Reg(Op):
+	def __init__(self, code: bytes, rh: int, rl: int):
+		comment_string = f'\t\t\t; ({U8.to_string(rh)}{U8.to_string(rl)}) = ({U8.to_string(rh)}{U8.to_string(rl)}) - 1; no flags set.'
+		super().__init__(code, 'dcx', [f'{U8.to_string(rh)}'], [], comment_string)
+		self.rh = rh
+		self.rl = rl
+
+	def step(self, state: State):
+		value = self.subop_u8_pair_to_u16(state.REG_UINT8[self.rh], state.REG_UINT8[self.rl])
+		result = self.subop_sub(value, 1)
+		val_h, val_l = self.subop_u16_to_u8_pair(result)
+		state.REG_UINT8[ self.rh ] = val_h & 0xFF
+		state.REG_UINT8[ self.rl ] = val_l & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		value = self.subop_u8_pair_to_u16(preop_state.REG_UINT8[self.rh], preop_state.REG_UINT8[self.rl])
+		result = int(value) - 1
+		val_h = result >> 8
+		val_l = result & 0xFF
+
+		RH_is_high_byte = postop_state.REG_UINT8[self.rh] == val_h 
+		RL_is_low_byte = postop_state.REG_UINT8[self.rl] == val_l
+
+		
+		assert RH_is_high_byte, f'{U8.to_string(self.rh)}{U8.to_string(self.rl)}\' =/= {U8.to_string(self.rh)}{U8.to_string(self.rl)} - 1'
+		assert RL_is_low_byte, f'{U8.to_string(self.rh)}{U8.to_string(self.rl)}\' =/= {U8.to_string(self.rh)}{U8.to_string(self.rl)} - 1'
+	
+
+class DCX_SP(Op):
+	def __init__(self, code: bytes ):
+		comment_string = f'\t\t\t; (SP) = (SP) - 1; no flags set.'
+		super().__init__(code, 'dcx', [f'SP'], [], comment_string)
+
+	def step(self, state: State):
+		print(state.REG_UINT16[U16.SP])
+		result = self.subop_sub(state.REG_UINT16[U16.SP], 1)
+		state.REG_UINT16[ U16.SP ] = result & 0xFFFF
+
+	def test(self, preop_state: State, postop_state: State):
+		SP_has_incremented = postop_state.REG_UINT16[U16.SP] == ((preop_state.REG_UINT16[U16.SP] - 1) & 0xFFFF)
+		assert SP_has_incremented, f'SP\' =/= SP + 1'
+		
+
 

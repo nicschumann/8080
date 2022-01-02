@@ -119,6 +119,12 @@ OPCODE_LIST = [
 
 
 	# Arithmetic Group
+
+	INX_Reg(0x03, U8.B, U8.C),
+	INX_Reg(0x13, U8.D, U8.E),
+	INX_Reg(0x23, U8.H, U8.L),
+	INX_SP(0x33),
+
 	INR_Reg(0x04, U8.B),
 	INR_Reg(0x14, U8.D),
 	INR_Reg(0x24, U8.H),
@@ -127,6 +133,11 @@ OPCODE_LIST = [
 	INR_Reg(0x1C, U8.E),
 	INR_Reg(0x2C, U8.L),
 	INR_Reg(0x3C, U8.A),
+
+	DCX_Reg(0x0B, U8.B, U8.C),
+	DCX_Reg(0x1B, U8.D, U8.E),
+	DCX_Reg(0x2B, U8.H, U8.L),
+	DCX_SP(0x3B),
 
 	DCR_Reg(0x05, U8.B),
 	DCR_Reg(0x15, U8.D),
