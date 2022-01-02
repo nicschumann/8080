@@ -136,9 +136,28 @@ OPCODE_LIST = [
 	ADC_Reg(0x8D, U8.L),
 	ADC_Mem(0x8E),
 	ADC_Reg(0x8F, U8.A),
+
+	SUB_Reg(0x90, U8.B),
+	SUB_Reg(0x91, U8.C),
+	SUB_Reg(0x92, U8.D),
+	SUB_Reg(0x93, U8.E),
+	SUB_Reg(0x94, U8.H),
+	SUB_Reg(0x95, U8.L),
+	SUB_Mem(0x96),
+	SUB_Reg(0x97, U8.A),
+
+	SBB_Reg(0x98, U8.B),
+	SBB_Reg(0x99, U8.C),
+	SBB_Reg(0x9A, U8.D),
+	SBB_Reg(0x9B, U8.E),
+	SBB_Reg(0x9C, U8.H),
+	SBB_Reg(0x9D, U8.L),
+	SBB_Mem(0x9E),
+	SBB_Reg(0x9F, U8.A),
 	
 
 	ADI(0xC6),
+	ACI(0xCE),
 
 
 

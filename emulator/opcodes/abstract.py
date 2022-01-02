@@ -3,6 +3,7 @@ from emulator.state import State
 from emulator.state import Uint16Registers as U16
 from emulator.state import Uint8Registers as U8
 from emulator.state import FlagsRegisters as F
+from functools import reduce
 
 class Op:
 	def __init__(
@@ -49,9 +50,16 @@ class Op:
 	def subop_setflags_add(self, result: int, state: State):
 		"""result may be a 16-bit uint"""
 		state.FLAGS[ F.Z ] = True if result & 0xFF == 0 else False
-		state.FLAGS[ F.S ] = True if result & 0x80 > 0 else False
+		state.FLAGS[ F.S ] = True if result & 0x80 != 0 else False
 		state.FLAGS[ F.P ] = True if (result & 0xFF) % 2 == 0 else False 
 		state.FLAGS[ F.CY ] = True if result > 0xFF else False
+
+
+	def subop_add(self, *arguments):
+		return reduce(lambda a,b: a + b, map(int, arguments))
+
+	def subop_sub(self, *arguments):
+		return reduce(lambda a,b: a - b, map(int, arguments))
 
 
 
