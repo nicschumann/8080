@@ -47,12 +47,14 @@ class Op:
 	def subop_addr_from_HL(self, state: State):
 		return self.subop_u8_pair_to_u16(state.REG_UINT8[ U8.H ], state.REG_UINT8[ U8.L ])
 
-	def subop_setflags_add(self, result: int, state: State):
+	def subop_setflags_add(self, result: int, state: State, CY=True):
 		"""result may be a 16-bit uint"""
 		state.FLAGS[ F.Z ] = True if result & 0xFF == 0 else False
 		state.FLAGS[ F.S ] = True if result & 0x80 != 0 else False
 		state.FLAGS[ F.P ] = True if (result & 0xFF) % 2 == 0 else False 
-		state.FLAGS[ F.CY ] = True if result > 0xFF else False
+		
+		if CY:
+			state.FLAGS[ F.CY ] = True if result > 0xFF else False
 
 
 	def subop_add(self, *arguments):

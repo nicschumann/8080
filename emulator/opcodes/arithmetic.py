@@ -274,5 +274,79 @@ class SBI(Op):
 		
 		assert A_is_sum, f'A\' =/= A - MEM[PC + 1] - CY'
 		assert PC_has_incremented, 'PC\' =/= PC + 2'
+
+
+class INR_Reg(Op):
+	def __init__(self, code: bytes, r: int):
+		comment_string = f'\t\t\t; {U8.to_string(r)} := {U8.to_string(r)} + 1; set flags Z, S, P, AC'
+		super().__init__(code, 'inr', [f'{U8.to_string(r)}'], [], comment_string)
+		self.r = r
+
+	def step(self, state: State):
+		result = self.subop_add(state.REG_UINT8[self.r], 1)
+		self.subop_setflags_add(result, state, CY=False)
+		state.REG_UINT8[ self.r ] = result & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		result = int(preop_state.REG_UINT8[self.r]) + 1
+		R_is_R_plus_1 = postop_state.REG_UINT8[self.r] == (result & 0xFF)
+		
+		assert R_is_R_plus_1, f'{U8.to_string(self.r)}\' =/= {U8.to_string(self.r)} + 1'
+
+
+class INR_Mem(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t\t; (HL) := (HL) + 1; set flags Z, S, P, AC'
+		super().__init__(code, 'inr', [f'M'], [], comment_string)
+
+	def step(self, state: State):
+		addr = self.subop_addr_from_HL(state)
+		result = self.subop_add(state.MEM[addr], 1)
+		self.subop_setflags_add(result, state, CY=False)
+		state.MEM[ addr ] = result & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		addr = self.subop_addr_from_HL(preop_state)
+		result = int(preop_state.MEM[addr]) + 1
+		MEM_is_MEM_plus_1 = postop_state.MEM[addr] == (result & 0xFF)
+		
+		assert MEM_is_MEM_plus_1, f'MEM[addr]\' =/= MEM[addr] + 1'
+
+
+class DCR_Reg(Op):
+	def __init__(self, code: bytes, r: int):
+		comment_string = f'\t\t\t; {U8.to_string(r)} := {U8.to_string(r)} - 1; set flags Z, S, P, AC'
+		super().__init__(code, 'dcr', [f'{U8.to_string(r)}'], [], comment_string)
+		self.r = r
+
+	def step(self, state: State):
+		result = self.subop_sub(state.REG_UINT8[self.r], 1)
+		self.subop_setflags_add(result, state, CY=False)
+		state.REG_UINT8[ self.r ] = result & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		result = int(preop_state.REG_UINT8[self.r]) - 1
+		R_is_R_sub_1 = postop_state.REG_UINT8[self.r] == (result & 0xFF)
+		
+		assert R_is_R_sub_1, f'{U8.to_string(self.r)}\' =/= {U8.to_string(self.r)} - 1'
+
+
+class DCR_Mem(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t\t; (HL) := (HL) - 1; set flags Z, S, P, AC'
+		super().__init__(code, 'dcr', [f'M'], [], comment_string)
+
+	def step(self, state: State):
+		addr = self.subop_addr_from_HL(state)
+		result = self.subop_sub(state.MEM[addr], 1)
+		self.subop_setflags_add(result, state, CY=False)
+		state.MEM[ addr ] = result & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		addr = self.subop_addr_from_HL(preop_state)
+		result = int(preop_state.MEM[addr]) - 1
+		MEM_is_MEM_plus_1 = postop_state.MEM[addr] == (result & 0xFF)
+		
+		assert MEM_is_MEM_plus_1, f'MEM[addr]\' =/= MEM[addr] - 1'
 		
 
