@@ -157,7 +157,10 @@ OPCODE_LIST = [
 	
 
 	ADI(0xC6),
+	SUI(0xD6),
+
 	ACI(0xCE),
+	SBI(0xDE)
 
 
 

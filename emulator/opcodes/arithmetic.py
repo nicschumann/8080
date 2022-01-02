@@ -230,51 +230,49 @@ class SBB_Mem(Op):
 		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
 
 
-# class ADI(Op):
-# 	def __init__(self, code: bytes):
-# 		comment_string = '\t\t\t; A := A + data:{0} (add immediate)'
-# 		super().__init__(code, 'adi', ['{0}'], [1], comment_string)
+class SUI(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A := A - data:{0} (sub immediate)'
+		super().__init__(code, 'sui', ['{0}'], [1], comment_string)
 
-# 	def step(self, state: State):
-# 		data_pointer = state.REG_UINT16[U16.PC]
-# 		data = state.MEM[ data_pointer ]
-# 		result = state.REG_UINT8[U8.A] + data
-# 		self.subop_setflags_add(result, state)
-# 		state.REG_UINT8[ U8.A ] = result & 0xFF
-# 		state.REG_UINT16[U16.PC] += 0x1
+	def step(self, state: State):
+		data_pointer = state.REG_UINT16[U16.PC]
+		result = self.subop_sub(state.REG_UINT8[U8.A], state.MEM[ data_pointer ])
+		self.subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF
+		state.REG_UINT16[U16.PC] += 0x1
 
-# 	def test(self, preop_state: State, postop_state: State):
-# 		data_pointer = preop_state.REG_UINT16[U16.PC] + 0x1
-# 		data = preop_state.REG_UINT8[U8.A] + preop_state.MEM[data_pointer]
+	def test(self, preop_state: State, postop_state: State):
+		data_pointer = preop_state.REG_UINT16[U16.PC] + 0x1
+		data = int(preop_state.REG_UINT8[U8.A]) - int(preop_state.MEM[data_pointer])
 
-# 		A_is_sum = postop_state.REG_UINT8[U8.A] == (data & 0xFF)
-# 		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
+		A_is_sum = postop_state.REG_UINT8[U8.A] == (data & 0xFF)
+		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
 		
-# 		assert A_is_sum, f'A\' =/= A + MEM[PC + 1]'
-# 		assert PC_has_incremented, 'PC\' =/= PC + 2'
+		assert A_is_sum, f'A\' =/= A - MEM[PC + 1]'
+		assert PC_has_incremented, 'PC\' =/= PC + 2'
 
 
-# class ACI(Op):
-# 	def __init__(self, code: bytes):
-# 		comment_string = '\t\t\t; A := A + data:{0} + CY (add immediate)'
-# 		super().__init__(code, 'aci', ['{0}'], [1], comment_string)
+class SBI(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A := A - data:{0} - CY (add immediate)'
+		super().__init__(code, 'sbi', ['{0}'], [1], comment_string)
 
-# 	def step(self, state: State):
-# 		data_pointer = state.REG_UINT16[U16.PC]
-# 		data = state.MEM[ data_pointer ]
-# 		result = state.REG_UINT8[U8.A] + data
-# 		self.subop_setflags_add(result, state)
-# 		state.REG_UINT8[ U8.A ] = result & 0xFF
-# 		state.REG_UINT16[U16.PC] += 0x1
+	def step(self, state: State):
+		data_pointer = state.REG_UINT16[U16.PC]
+		result = self.subop_sub(state.REG_UINT8[U8.A], state.MEM[ data_pointer ], state.FLAGS[F.CY])
+		self.subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF
+		state.REG_UINT16[U16.PC] += 0x1
 
-# 	def test(self, preop_state: State, postop_state: State):
-# 		data_pointer = preop_state.REG_UINT16[U16.PC] + 0x1
-# 		data = preop_state.REG_UINT8[U8.A] + preop_state.MEM[data_pointer] + preop_state.FLAGS[F.CY]
+	def test(self, preop_state: State, postop_state: State):
+		data_pointer = preop_state.REG_UINT16[U16.PC] + 0x1
+		data = int(preop_state.REG_UINT8[U8.A]) - int(preop_state.MEM[data_pointer]) - int(preop_state.FLAGS[F.CY])
 
-# 		A_is_sum = postop_state.REG_UINT8[U8.A] == (data & 0xFF)
-# 		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
+		A_is_sum = postop_state.REG_UINT8[U8.A] == (data & 0xFF)
+		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
 		
-# 		assert A_is_sum, f'A\' =/= A + MEM[PC + 1] + CY'
-# 		assert PC_has_incremented, 'PC\' =/= PC + 2'
+		assert A_is_sum, f'A\' =/= A - MEM[PC + 1] - CY'
+		assert PC_has_incremented, 'PC\' =/= PC + 2'
 		
 
