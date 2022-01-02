@@ -45,7 +45,7 @@ class FlagsRegisters():
 	S  : int = 1
 	P  : int = 2
 	CY : int = 3
-	AC : int = 464
+	AC : int = 4
 	E  : int = 5
 
 	MAX_REG : int = 6

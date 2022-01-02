@@ -494,5 +494,26 @@ class DAD_SP(Op):
 
 		assert H_is_high_byte, f'(HL) =/= (HL) + (SP)'
 		assert L_is_low_byte, f'(HL) =/= (HL) + (SP)'
+
+
+class DAA(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t\t; decimal adjust accumulator'
+		super().__init__(code, 'daa', [], [], comment_string)
+
+	def step(self, state: State):
+		val = int(state.REG_UINT8[U8.A])
+
+		if (val & 0x0F) > 9 or state.FLAGS[F.AC]:
+			val += 0x06
+
+		if (val & 0xF0) > 9 or state.FLAGS[F.CY]:
+			val += ((val >> 4) + 0x06) << 4
+
+		self.subop_setflags_add(val, state)
+		state.REG_UINT8[U8.A] = val & 0xFF
+
+	def test(self, preop_state: State, postop_state: State):
+		assert False, 'no test for DAA implemented.'
 		
 

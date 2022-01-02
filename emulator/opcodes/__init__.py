@@ -139,6 +139,8 @@ OPCODE_LIST = [
 	DAD_Reg(0x29, U8.H, U8.L),
 	DAD_SP(0x39),
 
+	DAA(0x27),
+
 	DCX_Reg(0x0B, U8.B, U8.C),
 	DCX_Reg(0x1B, U8.D, U8.E),
 	DCX_Reg(0x2B, U8.H, U8.L),
