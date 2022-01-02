@@ -31,14 +31,3 @@ def get_initial_state():
 
 def get_op_name(val):
 	return val.get_name()
-
-
-@pytest.mark.parametrize('op', OPCODE_LIST, ids=get_op_name)
-def test_op(op):
-	preop_state = get_initial_state()
-	preop_state.MEM[0x0] = op.code
-
-	postop_state = preop_state.clone()
-	step(postop_state)
-
-	op.test(preop_state, postop_state)

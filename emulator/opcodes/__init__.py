@@ -10,6 +10,7 @@ from emulator.state import Uint16Registers as U16
 from emulator.state import FlagsRegisters as F
 
 from .datatransfer import *
+from .arithmetic import *
 from .machine import *
 
 
@@ -116,6 +117,17 @@ OPCODE_LIST = [
 	MOV_Reg_Mem(0x7E, U8.A),
 	MOV_Reg_Reg(0x7F, U8.A, U8.A),
 
+
+	# Arithmetic Group
+	ADD_Reg(0x80, U8.B),
+	ADD_Reg(0x81, U8.C),
+	ADD_Reg(0x82, U8.D),
+	ADD_Reg(0x83, U8.E),
+	ADD_Reg(0x84, U8.H),
+	ADD_Reg(0x85, U8.L),
+	ADD_Mem(0x86),
+	ADD_Reg(0x87, U8.A),
+	
 
 
 
