@@ -91,4 +91,26 @@ class ADC_Mem(Op):
 		assert A_is_sum, f'A\' =/= A + MEM + CY (== {preop_state.FLAGS[F.CY]})'
 		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
 
+class ADI(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A := A + data:{0} (add immediate)'
+		super().__init__(code, 'adc', ['{0}'], [1], comment_string)
+
+	def step(self, state: State):
+		data_pointer = state.REG_UINT16[U16.PC]
+		data = state.MEM[ data_pointer ]
+		result = state.REG_UINT8[U8.A] + data
+		self.subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF
+		state.REG_UINT16[U16.PC] += 0x1
+
+	def test(self, preop_state: State, postop_state: State):
+		data_pointer = preop_state.REG_UINT16[U16.PC] + 0x1
+		data = preop_state.REG_UINT8[U8.A] + preop_state.MEM[data_pointer]
+
+		A_is_sum = postop_state.REG_UINT8[U8.A] == (data & 0xFF)
+		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
+		
+		assert A_is_sum, f'A\' =/= A + MEM[PC + 1])'
+		assert PC_has_incremented, 'PC\' =/= PC + 2'
 

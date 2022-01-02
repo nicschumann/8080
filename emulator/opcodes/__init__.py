@@ -138,6 +138,8 @@ OPCODE_LIST = [
 	ADC_Reg(0x8F, U8.A),
 	
 
+	ADI(0xC6),
+
 
 
 ]
