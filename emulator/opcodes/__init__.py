@@ -127,6 +127,15 @@ OPCODE_LIST = [
 	ADD_Reg(0x85, U8.L),
 	ADD_Mem(0x86),
 	ADD_Reg(0x87, U8.A),
+
+	ADC_Reg(0x88, U8.B),
+	ADC_Reg(0x89, U8.C),
+	ADC_Reg(0x8A, U8.D),
+	ADC_Reg(0x8B, U8.E),
+	ADC_Reg(0x8C, U8.H),
+	ADC_Reg(0x8D, U8.L),
+	ADC_Mem(0x8E),
+	ADC_Reg(0x8F, U8.A),
 	
 
 

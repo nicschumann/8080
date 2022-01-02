@@ -50,3 +50,45 @@ class ADD_Mem(Op):
 		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
 
 
+class ADC_Reg(Op):
+	def __init__(self, code: bytes, r: int):
+
+		comment_string = f'\t\t; A := A + {U8.to_string(r)} + CY'
+		super().__init__(code, 'adc', [f'{U8.to_string(r)}'], [], comment_string)
+		self.r = r
+
+	def step(self, state: State):
+		result = state.REG_UINT8[ U8.A ] + state.REG_UINT8[ self.r ] + state.FLAGS[F.CY]
+		self.subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF # cast result to a uint8_t
+
+	def test(self, preop_state: State, postop_state: State):
+		result = preop_state.REG_UINT8[self.r] + preop_state.REG_UINT8[U8.A] + preop_state.FLAGS[F.CY]
+		A_is_sum = postop_state.REG_UINT8[U8.A] == result & 0xFF
+		R_invariant = self.r == U8.A or preop_state.REG_UINT8[self.r] == postop_state.REG_UINT8[self.r]
+		
+		assert A_is_sum, f'A\' =/= A + {U8.to_string(self.r)} + CY (== {preop_state.FLAGS[F.CY]})'
+		assert R_invariant, f'{U8.to_string(self.r)}\' =/= {U8.to_string(self.r)}'
+		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
+
+class ADC_Mem(Op):
+	def __init__(self, code: bytes):
+
+		comment_string = f'\t\t; A := A + (HL) + CY'
+		super().__init__(code, 'adc', ['M'], [], comment_string)
+
+	def step(self, state: State):
+		addr = self.subop_addr_from_HL(state)
+		result = state.REG_UINT8[ U8.A ] + state.MEM[ addr ] + state.FLAGS[F.CY]
+		self.subop_setflags_add(result, state)
+		state.REG_UINT8[ U8.A ] = result & 0xFF # cast result to a uint8_t
+
+	def test(self, preop_state: State, postop_state: State):
+		addr = self.subop_addr_from_HL(preop_state)
+		result = preop_state.MEM[addr] + preop_state.REG_UINT8[U8.A] + preop_state.FLAGS[F.CY]
+		A_is_sum = postop_state.REG_UINT8[U8.A] == result & 0xFF
+		
+		assert A_is_sum, f'A\' =/= A + MEM + CY (== {preop_state.FLAGS[F.CY]})'
+		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
+
+
