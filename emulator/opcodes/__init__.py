@@ -134,6 +134,11 @@ OPCODE_LIST = [
 	INR_Reg(0x2C, U8.L),
 	INR_Reg(0x3C, U8.A),
 
+	DAD_Reg(0x09, U8.B, U8.C),
+	DAD_Reg(0x19, U8.D, U8.E),
+	DAD_Reg(0x29, U8.H, U8.L),
+	DAD_SP(0x39),
+
 	DCX_Reg(0x0B, U8.B, U8.C),
 	DCX_Reg(0x1B, U8.D, U8.E),
 	DCX_Reg(0x2B, U8.H, U8.L),

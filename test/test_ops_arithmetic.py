@@ -16,7 +16,8 @@ from test.test_ops_base import get_initial_state, get_op_name
 ARITHMETIC_OPCODES = [
 	'add', 'adc', 'adi', 'aci', 
 	'sub', 'sbb', 'sui', 'sbi', 
-	'inr', 'dcr', 'inx'
+	'inr', 'dcr', 'inx', 'dcx',
+	'dad'
 ]
 
 OPCODES = list(filter(lambda op: op.name in ARITHMETIC_OPCODES, OPCODE_LIST))

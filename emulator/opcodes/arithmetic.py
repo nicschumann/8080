@@ -384,7 +384,6 @@ class INX_SP(Op):
 		super().__init__(code, 'inx', [f'SP'], [], comment_string)
 
 	def step(self, state: State):
-		print(state.REG_UINT16[U16.SP])
 		result = self.subop_add(state.REG_UINT16[U16.SP], 1)
 		state.REG_UINT16[ U16.SP ] = result & 0xFFFF
 
@@ -427,7 +426,6 @@ class DCX_SP(Op):
 		super().__init__(code, 'dcx', [f'SP'], [], comment_string)
 
 	def step(self, state: State):
-		print(state.REG_UINT16[U16.SP])
 		result = self.subop_sub(state.REG_UINT16[U16.SP], 1)
 		state.REG_UINT16[ U16.SP ] = result & 0xFFFF
 
@@ -436,4 +434,65 @@ class DCX_SP(Op):
 		assert SP_has_incremented, f'SP\' =/= SP + 1'
 		
 
+class DAD_Reg(Op):
+	def __init__(self, code: bytes, rh: int, rl: int):
+		comment_string = f'\t\t\t; (HL) = (HL) + ({U8.to_string(rh)}{U8.to_string(rl)}); CY flag set for double-precision add.'
+		super().__init__(code, 'dad', [f'{U8.to_string(rh)}'], [], comment_string)
+		self.rh = rh
+		self.rl = rl
+
+	def step(self, state: State):
+		v1 = self.subop_u8_pair_to_u16(state.REG_UINT8[self.rh], state.REG_UINT8[self.rl])
+		v2 = self.subop_u8_pair_to_u16(state.REG_UINT8[U8.H], state.REG_UINT8[U8.L])
+		result = self.subop_add(v1, v2)
+		state.FLAGS[F.CY] = True if result > 0xFFFF else False
+
+		res_h, res_l = self.subop_u16_to_u8_pair(result & 0xFFFF)
+
+		state.REG_UINT8[U8.H] = res_h
+		state.REG_UINT8[U8.L] = res_l
+
+
+	def test(self, preop_state: State, postop_state: State):
+		v1 = self.subop_u8_pair_to_u16(preop_state.REG_UINT8[self.rh], preop_state.REG_UINT8[self.rl])
+		v2 = self.subop_u8_pair_to_u16(preop_state.REG_UINT8[U8.H], preop_state.REG_UINT8[U8.L])
+		result = v1 + v2
+		res_h, res_l = self.subop_u16_to_u8_pair(result & 0xFFFF)
+
+		H_is_high_byte = postop_state.REG_UINT8[U8.H] == res_h
+		L_is_low_byte = postop_state.REG_UINT8[U8.L] == res_l
+
+		assert H_is_high_byte, f'(HL) =/= (HL) + ({U8.to_string(self.rh)}{U8.to_string(self.rl)})'
+		assert L_is_low_byte, f'(HL) =/= (HL) + ({U8.to_string(self.rh)}{U8.to_string(self.rl)})'
+
+	
+class DAD_SP(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t\t; (HL) = (HL) + (SP); CY flag set for double-precision add.'
+		super().__init__(code, 'dad', [f'SP'], [], comment_string)
+
+	def step(self, state: State):
+		v1 = state.REG_UINT16[U16.SP]
+		v2 = self.subop_u8_pair_to_u16(state.REG_UINT8[U8.H], state.REG_UINT8[U8.L])
+		result = self.subop_add(v1, v2)
+		state.FLAGS[F.CY] = True if result > 0xFFFF else False
+
+		res_h, res_l = self.subop_u16_to_u8_pair(result & 0xFFFF)
+
+		state.REG_UINT8[U8.H] = res_h
+		state.REG_UINT8[U8.L] = res_l
+
+
+	def test(self, preop_state: State, postop_state: State):
+		v1 = preop_state.REG_UINT16[U16.SP]
+		v2 = self.subop_u8_pair_to_u16(preop_state.REG_UINT8[U8.H], preop_state.REG_UINT8[U8.L])
+		result = v1 + v2
+		res_h, res_l = self.subop_u16_to_u8_pair(result & 0xFFFF)
+
+		H_is_high_byte = postop_state.REG_UINT8[U8.H] == res_h
+		L_is_low_byte = postop_state.REG_UINT8[U8.L] == res_l
+
+		assert H_is_high_byte, f'(HL) =/= (HL) + (SP)'
+		assert L_is_low_byte, f'(HL) =/= (HL) + (SP)'
+		
 
