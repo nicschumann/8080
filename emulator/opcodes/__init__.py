@@ -11,6 +11,7 @@ from emulator.state import FlagsRegisters as F
 
 from .datatransfer import *
 from .arithmetic import *
+from .logical import *
 from .machine import *
 
 
@@ -191,13 +192,38 @@ OPCODE_LIST = [
 	SBB_Reg(0x9D, U8.L),
 	SBB_Mem(0x9E),
 	SBB_Reg(0x9F, U8.A),
-	
 
 	ADI(0xC6),
 	SUI(0xD6),
 
 	ACI(0xCE),
-	SBI(0xDE)
+	SBI(0xDE),
+
+
+	# Logical Group
+
+	ANA_Reg(0xA0, U8.B),
+	ANA_Reg(0xA1, U8.C),
+	ANA_Reg(0xA2, U8.D),
+	ANA_Reg(0xA3, U8.E),
+	ANA_Reg(0xA4, U8.H),
+	ANA_Reg(0xA5, U8.L),
+	ANA_Mem(0xA6),
+	ANA_Reg(0xA7, U8.A),
+
+	XRA_Reg(0xA8, U8.B),
+	XRA_Reg(0xA9, U8.C),
+	XRA_Reg(0xAA, U8.D),
+	XRA_Reg(0xAB, U8.E),
+	XRA_Reg(0xAC, U8.H),
+	XRA_Reg(0xAD, U8.L),
+	XRA_Mem(0xAE),
+	XRA_Reg(0xAF, U8.A),
+
+	ANI(0xE6),
+	XRI(0xEE),
+	
+
 
 
 

@@ -69,6 +69,14 @@ class Op:
 	def subop_sub(self, *arguments):
 		return reduce(lambda a,b: a - b, map(int, arguments))
 
+	def subop_and(self, *arguments):
+		return reduce(lambda a,b: a & b, map(int, arguments))
+
+	def subop_xor(self, *arguments):
+		return reduce(lambda a,b: a ^ b, map(int, arguments))
+
+
+
 
 
 def UnimplementedOp(Op):
