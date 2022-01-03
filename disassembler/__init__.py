@@ -16,14 +16,15 @@ def disassemble(file):
 	i = 0
 	while opcode:
 		line_number = file.tell() - 1
+		int_opcode = int.from_bytes(opcode, 'big')
 
 		try:
-			if opcode in NEW_OPCODE_TABLE:
-				int_opcode = int.from_bytes(opcode, 'big')
-				op = NEW_OPCODE_TABLE[opcode]
+			if int_opcode in NEW_OPCODE_TABLE:
+				op = NEW_OPCODE_TABLE[int_opcode]
 				dissasembly, argsizes = op.disassembly_data()
 
 			else:
+				print(f'missing opcode: {int_opcode}')
 				dissasembly, argsizes = OPCODE_TABLE[opcode]
 
 		except KeyError:
