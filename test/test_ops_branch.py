@@ -16,7 +16,11 @@ from test.test_ops_base import get_initial_state, get_op_name
 BRANCH_OPCODES = [
 	'jmp', 'jnz', 'jz',
 	'jnc', 'jc', 'jpo',
-	'jpe', 'jp', 'jm'
+	'jpe', 'jp', 'jm',
+
+	'call', 'cnz', 'cz',
+	'cnc', 'cc', 'cpo',
+	'cpe', 'cp', 'cm',
 ]
 
 OPCODES = list(filter(lambda op: op.name in BRANCH_OPCODES, OPCODE_LIST))

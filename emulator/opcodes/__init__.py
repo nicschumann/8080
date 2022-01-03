@@ -256,14 +256,24 @@ OPCODE_LIST = [
 	# Branch Group
 
 	JCOND_Imm(0xC3, 'jmp', lambda FLAGS: True),
-	JCOND_Imm(0xC2, 'jnz', lambda FLAGS: not FLAGS[F.Z]),
 	JCOND_Imm(0xCA, 'jz', lambda FLAGS: FLAGS[F.Z]),
-	JCOND_Imm(0xD2, 'jnc', lambda FLAGS: not FLAGS[F.CY]),
 	JCOND_Imm(0xDA, 'jc', lambda FLAGS: FLAGS[F.CY]),
-	JCOND_Imm(0xE2, 'jpo', lambda FLAGS: not FLAGS[F.P]),
 	JCOND_Imm(0xEA, 'jpe', lambda FLAGS: FLAGS[F.P]),
-	JCOND_Imm(0xF2, 'jp', lambda FLAGS: not FLAGS[F.S]),
 	JCOND_Imm(0xFA, 'jm', lambda FLAGS: FLAGS[F.S]),
+	JCOND_Imm(0xC2, 'jnz', lambda FLAGS: not FLAGS[F.Z]),
+	JCOND_Imm(0xD2, 'jnc', lambda FLAGS: not FLAGS[F.CY]),
+	JCOND_Imm(0xE2, 'jpo', lambda FLAGS: not FLAGS[F.P]),
+	JCOND_Imm(0xF2, 'jp', lambda FLAGS: not FLAGS[F.S]),
+
+	CCOND_Imm(0xCD, 'call', lambda FLAGS: True),
+	CCOND_Imm(0xCC, 'cz', lambda FLAGS: FLAGS[F.Z]),
+	CCOND_Imm(0xDC, 'cc', lambda FLAGS: FLAGS[F.CY]),
+	CCOND_Imm(0xEC, 'cpe', lambda FLAGS: FLAGS[F.P]),
+	CCOND_Imm(0xFC, 'cm', lambda FLAGS: FLAGS[F.S]),
+	CCOND_Imm(0xC4, 'cnz', lambda FLAGS: not FLAGS[F.Z]),
+	CCOND_Imm(0xD4, 'cnc', lambda FLAGS: not FLAGS[F.CY]),
+	CCOND_Imm(0xE4, 'cpo', lambda FLAGS: not FLAGS[F.P]),
+	CCOND_Imm(0xF4, 'cp', lambda FLAGS: not FLAGS[F.S]),
 
 ]
 
