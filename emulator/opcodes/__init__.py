@@ -202,6 +202,11 @@ OPCODE_LIST = [
 
 	# Logical Group
 
+	RLC(0x07),
+	RAL(0x17),
+	RRC(0x0F),
+	RAR(0x1F),
+
 	ANA_Reg(0xA0, U8.B),
 	ANA_Reg(0xA1, U8.C),
 	ANA_Reg(0xA2, U8.D),

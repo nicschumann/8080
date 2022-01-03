@@ -294,3 +294,121 @@ class CPI(Op):
 		assert Z_is_set, f'Z\' =/= A:{preop_state.REG_UINT8[U8.A]} == data:{preop_state.MEM[data_pointer]}'
 		assert PC_has_incremented, f'PC\' == PC + 2'
 		assert self.mem_invariant(preop_state, postop_state), 'MEM\' =/= MEM'
+
+
+class RLC(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A_n+1 := A_n; A_0 = A_7; CY = A_7'
+		super().__init__(code, 'rlc', [], [], comment_string)
+
+	def step(self, state: State):
+		value = state.REG_UINT8[U8.A]
+		rot_value = (value << 1) & 0xFF
+		new_carry = (value >> 7)
+		new_value = rot_value | new_carry
+
+		state.REG_UINT8[U8.A] = new_value
+		state.FLAGS[F.CY] = new_carry
+
+
+	def test(self, preop_state: State, postop_state: State):
+		high_bit = preop_state.REG_UINT8[U8.A] >> 7
+		A_rot = (preop_state.REG_UINT8[U8.A] << 1) & 0xFE
+
+		A_is_rotated = A_rot == postop_state.REG_UINT8[U8.A] & 0xFE
+		A_high_bit = high_bit == postop_state.REG_UINT8[U8.A] & 0x1
+		CY_is_set = high_bit == postop_state.FLAGS[F.CY]
+
+		assert A_is_rotated, 'A\'_n+1 == A_n'
+		assert A_high_bit, 'A\'_0 == A_7'
+		assert CY_is_set, 'CY\' =/= A_7'
+
+
+class RRC(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A_n := A_n-1; A_7 = A_0; CY = A_0'
+		super().__init__(code, 'rrc', [], [], comment_string)
+
+	def step(self, state: State):
+		value = state.REG_UINT8[U8.A]
+
+		new_carry = value & 0x1
+		new_value = (new_carry << 7) | (value >> 1)
+
+		state.REG_UINT8[U8.A] = new_value
+		state.FLAGS[F.CY] = new_carry
+
+
+	def test(self, preop_state: State, postop_state: State):
+		low_bit = preop_state.REG_UINT8[U8.A] & 0x1
+		A_rot = (preop_state.REG_UINT8[U8.A] >> 1) & 0b01111111
+
+		A_is_rotated = A_rot == postop_state.REG_UINT8[U8.A] & 0b01111111
+		A_low_bit = low_bit == (postop_state.REG_UINT8[U8.A] >> 7)
+		CY_is_set = low_bit == postop_state.FLAGS[F.CY]
+
+		assert A_is_rotated, 'A\'_n == A_n-1'
+		assert A_low_bit, 'A\'_7 == A_0'
+		assert CY_is_set, 'CY\' =/= A_0'
+
+
+class RAL(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A_n+1 := A_n; A_0 = CY; CY = A_7'
+		super().__init__(code, 'ral', [], [], comment_string)
+
+	def step(self, state: State):
+		value = state.REG_UINT8[U8.A]
+		old_carry = state.FLAGS[F.CY]
+
+		rot_value = (value << 1) & 0xFF
+		new_carry = (value >> 7)
+		new_value = rot_value | old_carry
+
+		state.REG_UINT8[U8.A] = new_value
+		state.FLAGS[F.CY] = new_carry
+
+
+	def test(self, preop_state: State, postop_state: State):
+		high_bit = preop_state.REG_UINT8[U8.A] >> 7
+		carry = preop_state.FLAGS[F.CY]
+		A_rot = (preop_state.REG_UINT8[U8.A] << 1) & 0xFE
+
+		A_is_rotated = A_rot == postop_state.REG_UINT8[U8.A] & 0xFE
+		A_high_bit_is_CY = carry == postop_state.REG_UINT8[U8.A] & 0x1
+		CY_is_set = high_bit == postop_state.FLAGS[F.CY]
+
+		assert A_is_rotated, 'A\'_n+1 == A_n'
+		assert A_high_bit_is_CY, 'A\'_0 == CY'
+		assert CY_is_set, 'CY\' =/= A_7'
+
+
+class RAR(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A_n := A_n-1; A_7 = CY; CY = A_0'
+		super().__init__(code, 'rar', [], [], comment_string)
+
+	def step(self, state: State):
+		value = state.REG_UINT8[U8.A]
+		old_carry = state.FLAGS[F.CY]
+
+		new_carry = value & 0x1
+		new_value = (old_carry << 7) | (value >> 1)
+
+		state.REG_UINT8[U8.A] = new_value
+		state.FLAGS[F.CY] = new_carry
+
+
+	def test(self, preop_state: State, postop_state: State):
+		low_bit = preop_state.REG_UINT8[U8.A] & 0x1
+		carry = preop_state.FLAGS[F.CY]
+		A_rot = (preop_state.REG_UINT8[U8.A] >> 1) & 0b01111111
+
+		A_is_rotated = A_rot == postop_state.REG_UINT8[U8.A] & 0b01111111
+		A_low_bit_is_CY = carry == (postop_state.REG_UINT8[U8.A] >> 7)
+		CY_is_set = low_bit == postop_state.FLAGS[F.CY]
+
+		assert A_is_rotated, 'A\'_n == A_n-1'
+		assert A_low_bit_is_CY, 'A\'_7 == CY'
+		assert CY_is_set, 'CY\' =/= A_0'
+
