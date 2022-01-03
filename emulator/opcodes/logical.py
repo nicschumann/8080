@@ -426,6 +426,7 @@ class CMA(Op):
 		A_is_A_comp = ~preop_state.REG_UINT8[U8.A] & 0xFF == postop_state.REG_UINT8[U8.A]
 		assert A_is_A_comp, 'A\' =/= ~A'
 
+
 class CMC(Op):
 	def __init__(self, code: bytes):
 		comment_string = '\t\t\t; CY := ~CY'
@@ -440,3 +441,14 @@ class CMC(Op):
 		assert CY_is_CY_comp, 'CY\' =/= ~CY'
 
 
+class STC(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; CY := 1'
+		super().__init__(code, 'stc', [], [], comment_string)
+
+	def step(self, state: State):
+		state.FLAGS[F.CY] = True
+
+	def test(self, preop_state: State, postop_state: State):
+		CY_is_True = postop_state.FLAGS[F.CY]
+		assert CY_is_True, 'CY\' =/= 1'

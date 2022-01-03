@@ -17,7 +17,7 @@ LOGICAL_OPCODES = [
 	'ana', 'ani', 'xra', 'xri',
 	'ora', 'ori', 'cmp', 'cpi',
 	'rlc', 'rrc', 'ral', 'rar',
-	'cma', 'cmc'
+	'cma', 'cmc', 'stc'
 ]
 
 OPCODES = list(filter(lambda op: op.name in LOGICAL_OPCODES, OPCODE_LIST))
