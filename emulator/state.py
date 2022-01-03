@@ -92,9 +92,9 @@ class State:
 		return uint8_reg_equal and uint16_reg_equal and flags_reg_equal and mem_equal
 
 	def __repr__(self):
-		rep  = f'A: {hex(self.REG_UINT8[Uint8Registers.A])}\n'
+		rep  = f'\nA: {hex(self.REG_UINT8[Uint8Registers.A])}\n'
 		rep += f'B: {hex(self.REG_UINT8[Uint8Registers.B])}\tC:{hex(self.REG_UINT8[Uint8Registers.C])}\n'
-		rep += f'D: {hex(self.REG_UINT8[Uint8Registers.D])}\tD:{hex(self.REG_UINT8[Uint8Registers.D])}\n'
+		rep += f'D: {hex(self.REG_UINT8[Uint8Registers.D])}\tE:{hex(self.REG_UINT8[Uint8Registers.E])}\n'
 		rep += f'H: {hex(self.REG_UINT8[Uint8Registers.H])}\tL:{hex(self.REG_UINT8[Uint8Registers.L])}\n\n'
 
 		rep += f'SP: {hex(self.REG_UINT16[Uint16Registers.SP])}\nPC: {hex(self.REG_UINT16[Uint16Registers.PC])}\n\n'
@@ -103,8 +103,12 @@ class State:
 		rep += f'S: {int(self.FLAGS[FlagsRegisters.S])}, '
 		rep += f'P: {int(self.FLAGS[FlagsRegisters.P])}, '
 		rep += f'CY: {int(self.FLAGS[FlagsRegisters.CY])}, '
-		rep += f'CY: {int(self.FLAGS[FlagsRegisters.AC])}, '
-		rep += f'E: {int(self.FLAGS[FlagsRegisters.E])}'
+		rep += f'AC: {int(self.FLAGS[FlagsRegisters.AC])}, '
+		rep += f'E: {int(self.FLAGS[FlagsRegisters.E])}\n'
+
+		rep += f'PSW: {int(self.FLAGS[FlagsRegisters.S])}'
+		rep += f'{int(self.FLAGS[FlagsRegisters.Z])}0{int(self.FLAGS[FlagsRegisters.AC])}0'
+		rep += f'{int(self.FLAGS[FlagsRegisters.P])}1{int(self.FLAGS[FlagsRegisters.CY])}\n'
 
 		return rep
 

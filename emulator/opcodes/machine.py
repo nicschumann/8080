@@ -23,3 +23,109 @@ class NOP(Op):
 		assert U8_is_unchanged, "REG =/= REG'"
 		assert PC_has_incremented, "PC + 1 =/= PC'"
 
+
+class PUSH_Reg(Op):
+	def __init__(self, code: bytes, rh: int, rl: int):
+		comment_string = f'\t\t; (SP - 1) = {U8.to_string(rh)}; (SP - 2) = {U8.to_string(rl)}; SP = SP - 2'
+		super().__init__(code, 'push', [f'{U8.to_string(rh)}'], [], comment_string)
+		self.rh = rh
+		self.rl = rl
+
+	def step(self, state: State):
+		SP = state.REG_UINT16[U16.SP]
+		state.MEM[SP - 0x1] = state.REG_UINT8[self.rh]
+		state.MEM[SP - 0x2] = state.REG_UINT8[self.rl]
+		state.REG_UINT16[U16.SP] -= 0x2
+
+	def test(self, preop_state: State, postop_state: State):
+		SP = preop_state.REG_UINT16[U16.SP]
+
+		SP_is_rh = postop_state.MEM[SP - 0x1] == preop_state.REG_UINT8[self.rh]
+		SP_is_rl = postop_state.MEM[SP - 0x2] == preop_state.REG_UINT8[self.rl]
+		SP_has_decremented = postop_state.REG_UINT16[U16.SP] == SP - 0x2
+
+		assert SP_is_rh, f'MEM\'[SP - 1] =/= {U8.to_string(self.rh)}'
+		assert SP_is_rl, f'MEM\'[SP - 2] =/= {U8.to_string(self.rl)}'
+		assert SP_has_decremented, 'SP\' =/= SP - 2'
+
+
+class PUSH_PSW(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t; (SP - 1) := A; (SP - 2) := FLAGS; SP := SP - 2'
+		super().__init__(code, 'push', [f'PSW'], [], comment_string)
+
+	def step(self, state: State):
+		SP = state.REG_UINT16[U16.SP]
+		psw = self.subop_get_processor_status_word(state)
+		state.MEM[SP - 0x1] = state.REG_UINT8[U8.A]
+		state.MEM[SP - 0x2] = psw
+		state.REG_UINT16[U16.SP] -= 0x2
+
+
+	def test(self, preop_state: State, postop_state: State):
+		SP = preop_state.REG_UINT16[U16.SP]
+		PSW = self.subop_get_processor_status_word(preop_state)
+		SP_is_A = postop_state.MEM[SP - 0x1] == preop_state.REG_UINT8[U8.A]
+		SP_is_PSW = postop_state.MEM[SP - 0x2] == PSW
+		SP_has_decremented = postop_state.REG_UINT16[U16.SP] == SP - 0x2
+
+		assert SP_is_A, f'MEM\'[SP - 1] =/= A'
+		assert SP_is_PSW, f'MEM\'[SP - 2] =/= PSW'
+		assert SP_has_decremented, 'SP\' =/= SP - 2'
+
+
+class POP_Reg(Op):
+	def __init__(self, code: bytes, rh: int, rl: int):
+		comment_string = f'\t\t;  {U8.to_string(rh)} = (SP + 1); {U8.to_string(rl)} = SP; SP = SP + 2'
+		super().__init__(code, 'pop', [f'{U8.to_string(rh)}'], [], comment_string)
+		self.rh = rh
+		self.rl = rl
+
+	def step(self, state: State):
+		SP = state.REG_UINT16[U16.SP]
+		state.REG_UINT8[self.rh] = state.MEM[SP + 0x1]
+		state.REG_UINT8[self.rl] = state.MEM[SP]
+		state.REG_UINT16[U16.SP] += 0x2
+
+	def test(self, preop_state: State, postop_state: State):
+		SP = preop_state.REG_UINT16[U16.SP]
+
+		SP_is_rh = postop_state.REG_UINT8[self.rh] == preop_state.MEM[SP + 0x1]
+		SP_is_rl = postop_state.REG_UINT8[self.rl] == preop_state.MEM[SP]
+		SP_has_incremented = postop_state.REG_UINT16[U16.SP] == SP + 0x2
+
+		assert SP_is_rh, f'{U8.to_string(self.rh)}\' =/= MEM[SP - 1]'
+		assert SP_is_rl, f'{U8.to_string(self.rl)}\' =/= MEM[SP - 2]'
+		assert SP_has_incremented, 'SP\' =/= SP + 2'
+
+
+class POP_PSW(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t; (SP - 1) := A; (SP - 2) := FLAGS; SP := SP - 2'
+		super().__init__(code, 'pop', [f'PSW'], [], comment_string)
+
+	def step(self, state: State):
+		SP = state.REG_UINT16[U16.SP]
+		PSW = state.MEM[ SP ]
+		A = state.MEM[ SP + 0x1 ]
+
+		state.REG_UINT8[U8.A] = A
+		self.subop_set_processor_status_word(PSW, state)
+		state.REG_UINT16[U16.SP] += 0x2
+
+	def test(self, preop_state: State, postop_state: State):
+		SP = preop_state.REG_UINT16[U16.SP]
+		PSW = self.subop_get_processor_status_word(postop_state)
+
+		# print(f'MEM: {bin((preop_state.MEM[SP] & 0xD7) | 0x2)}')
+		# print(f'PSW: {bin(PSW)}')
+
+		SP_is_A = preop_state.MEM[SP + 0x1] == postop_state.REG_UINT8[U8.A]
+		SP_is_PSW = (preop_state.MEM[SP] & 0xD7) | 0x2 == PSW
+		SP_has_incremented = postop_state.REG_UINT16[U16.SP] == SP + 0x2
+
+		assert SP_is_A, f'A\' =/= MEM[SP - 1]'
+		assert SP_is_PSW, f'PSW\' =/= MEM[SP]'
+		assert SP_has_incremented, 'SP\' =/= SP + 2'
+
+

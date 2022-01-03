@@ -56,6 +56,24 @@ class Op:
 		if CY:
 			state.FLAGS[ F.CY ] = True if result > 0xFF or result < 0x00 else False
 
+	def subop_get_processor_status_word(self, state: State):
+		PSW = int(state.FLAGS[F.CY]) \
+			| 2 \
+			| (int(state.FLAGS[F.P]) << 2) \
+			| (int(state.FLAGS[F.AC]) << 4) \
+			| (int(state.FLAGS[F.Z]) << 6) \
+			| (int(state.FLAGS[F.S]) << 7) \
+
+		return PSW
+
+	def subop_set_processor_status_word(self, psw, state: State):
+		psw_safe = (psw & 0xD7) | 0x2 # = 0b11010111
+		state.FLAGS[F.CY] = bool(psw & 0x1)
+		state.FLAGS[F.P] = bool((psw >> 2) & 0x1)
+		state.FLAGS[F.AC] = bool((psw >> 4) & 0x1)
+		state.FLAGS[F.Z] = bool((psw >> 6) & 0x1)
+		state.FLAGS[F.S] = bool((psw >> 7) & 0x1)
+
 	def subop_add(self, *arguments):
 		return reduce(lambda a,b: a + b, map(int, arguments))
 

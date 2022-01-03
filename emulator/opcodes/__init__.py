@@ -295,6 +295,18 @@ OPCODE_LIST = [
 	RST(0xFF),
 
 	PCHL(0xE9),
+
+
+	# Machine Control Group
+	PUSH_Reg(0xC5, U8.B, U8.C),
+	PUSH_Reg(0xD5, U8.D, U8.E),
+	PUSH_Reg(0xE5, U8.H, U8.L),
+	PUSH_PSW(0xF5),
+
+	POP_Reg(0xC1, U8.B, U8.C),
+	POP_Reg(0xD1, U8.D, U8.E),
+	POP_Reg(0xE1, U8.H, U8.L),
+	POP_PSW(0xF1),
 	
 	
 

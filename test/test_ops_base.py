@@ -15,7 +15,7 @@ def get_initial_state(flags=False):
 	state = State()
 	
 	state.REG_UINT16[ U16.PC ] = 0x0
-	state.REG_UINT16[ U16.SP ] = 0x200
+	state.REG_UINT16[ U16.SP ] = 0x2400
 
 	state.REG_UINT8[ U8.A ] = 0x10
 	state.REG_UINT8[ U8.B ] = 0x10
