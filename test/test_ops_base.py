@@ -11,7 +11,7 @@ from emulator.opcodes import OPCODE_LIST
 from emulator.step import step
 
 
-def get_initial_state():
+def get_initial_state(flags=False):
 	state = State()
 	
 	state.REG_UINT16[ U16.PC ] = 0x0
@@ -23,6 +23,8 @@ def get_initial_state():
 	state.REG_UINT8[ U8.E ] = 0x04
 	state.REG_UINT8[ U8.H ] = 0x05
 	state.REG_UINT8[ U8.L ] = 0x06
+
+	if flags: state.FLAGS = np.ones_like(state.FLAGS, dtype=bool)
 
 	state.MEM = np.random.randint(0, 256, size=len(state.MEM), dtype=np.uint8)
 

@@ -12,6 +12,7 @@ from emulator.state import FlagsRegisters as F
 from .datatransfer import *
 from .arithmetic import *
 from .logical import *
+from .branch import *
 from .machine import *
 
 
@@ -250,6 +251,19 @@ OPCODE_LIST = [
 	ORI(0xF6),
 	XRI(0xEE),
 	CPI(0xFE),
+
+
+	# Branch Group
+
+	JCOND_Imm(0xC3, 'jmp', lambda FLAGS: True),
+	JCOND_Imm(0xC2, 'jnz', lambda FLAGS: not FLAGS[F.Z]),
+	JCOND_Imm(0xCA, 'jz', lambda FLAGS: FLAGS[F.Z]),
+	JCOND_Imm(0xD2, 'jnc', lambda FLAGS: not FLAGS[F.CY]),
+	JCOND_Imm(0xDA, 'jc', lambda FLAGS: FLAGS[F.CY]),
+	JCOND_Imm(0xE2, 'jpo', lambda FLAGS: not FLAGS[F.P]),
+	JCOND_Imm(0xEA, 'jpe', lambda FLAGS: FLAGS[F.P]),
+	JCOND_Imm(0xF2, 'jp', lambda FLAGS: not FLAGS[F.S]),
+	JCOND_Imm(0xFA, 'jm', lambda FLAGS: FLAGS[F.S]),
 
 ]
 
