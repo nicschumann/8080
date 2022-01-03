@@ -309,10 +309,15 @@ OPCODE_LIST = [
 	POP_PSW(0xF1),
 
 	XTHL(0xE3),
-	SPHL(0xF9)
-	
-	
+	SPHL(0xF9),
 
+	IN_Imm(0xDB),
+	OUT_Imm(0xD3),
+
+	EI(0xFB),
+	DI(0xF3),
+
+	HLT(0x76),
 ]
 
 NEW_OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))

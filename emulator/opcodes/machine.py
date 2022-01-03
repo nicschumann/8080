@@ -176,4 +176,71 @@ class SPHL(Op):
 		assert SP_has_jumped, 'SP\' =/= (HL)'
 
 
+class IN_Imm(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t; A := (data bus):{0}'
+		super().__init__(code, 'in', ['{0}'], [1], comment_string)
+
+	def step(self, state: State):
+		...
+
+	def test(self, preop_state: State, postop_state: State):
+		# Note(Nic): input from peripherals is not yet implemented 
+		# on this emulator...
+		assert True
+
+
+class OUT_Imm(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t; (data bus):{0} := A'
+		super().__init__(code, 'out', ['{0}'], [1], comment_string)
+
+	def step(self, state: State):
+		...
+
+	def test(self, preop_state: State, postop_state: State):
+		# Note(Nic): input from peripherals is not yet implemented 
+		# on this emulator...
+		assert True
+
+
+class DI(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t; disable interrupts'
+		super().__init__(code, 'di', [], [], comment_string)
+
+	def step(self, state: State):
+		state.FLAGS[F.DI] = True
+
+	def test(self, preop_state: State, postop_state: State):
+		# Note(Nic): Nothing really to test here, just sets a status flag
+		assert postop_state.FLAGS[F.DI]
+
+
+class EI(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t; enable interrupts'
+		super().__init__(code, 'ei', [], [], comment_string)
+
+	def step(self, state: State):
+		state.FLAGS[F.DI] = False
+
+	def test(self, preop_state: State, postop_state: State):
+		# Note(Nic): Nothing really to test here, just sets a status flag
+		assert not postop_state.FLAGS[F.DI]
+
+
+class HLT(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t; halts processor'
+		super().__init__(code, 'hlt', [], [], comment_string)
+
+	def step(self, state: State):
+		state.FLAGS[F.E] = False
+
+	def test(self, preop_state: State, postop_state: State):
+		# Note(Nic): Nothing really to test here, just sets a status flag
+		assert not postop_state.FLAGS[F.E]
+
+
 

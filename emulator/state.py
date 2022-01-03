@@ -47,8 +47,9 @@ class FlagsRegisters():
 	CY : int = 3
 	AC : int = 4
 	E  : int = 5
+	DI : int = 6
 
-	MAX_REG : int = 6
+	MAX_REG : int = 7
 
 
 
@@ -104,6 +105,7 @@ class State:
 		rep += f'P: {int(self.FLAGS[FlagsRegisters.P])}, '
 		rep += f'CY: {int(self.FLAGS[FlagsRegisters.CY])}, '
 		rep += f'AC: {int(self.FLAGS[FlagsRegisters.AC])}, '
+		rep += f'DI: {int(self.FLAGS[FlagsRegisters.DI])}, '
 		rep += f'E: {int(self.FLAGS[FlagsRegisters.E])}\n'
 
 		rep += f'PSW: {int(self.FLAGS[FlagsRegisters.S])}'

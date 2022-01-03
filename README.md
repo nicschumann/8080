@@ -16,6 +16,10 @@ Similarly, run `pytest` as a module to go test:
 python -m pytest -v # -v optional; shows individual test identities
 ```
 
+### Testing Note: Opcodes
+
+The intel 8080 processor has `244` unique opcodes, out of a possible 256. The remaining 12 unallocated opcodes are aliases for `nop`, `jmp`, `call`, and `ret`. They should not be used. If you run `python -m pytest` to test all the opcodes, it will report `243` opcodes tested. This is because a test for the `daa` instruction (Decimal Adjust Accumulator, for doing 4-bit binary coded decimal math) is not implemented on this emulator as of yet. Once I have a compelling test case for `daa`, I'll add the test.
+
 ## References
 
 - [Matrix of 256 possible 1-byte instructions for the 8080](https://pastraiser.com/cpu/i8080/i8080_opcodes.html). Super useful overview; useful reference for opcode coverage, disassembler, and emulator.

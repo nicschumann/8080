@@ -17,7 +17,7 @@ ARITHMETIC_OPCODES = [
 	'add', 'adc', 'adi', 'aci', 
 	'sub', 'sbb', 'sui', 'sbi', 
 	'inr', 'dcr', 'inx', 'dcx',
-	'dad', # 'daa' # ignore daa for now
+	'dad', # 'daa' # no test for daa yet.
 ]
 
 OPCODES = list(filter(lambda op: op.name in ARITHMETIC_OPCODES, OPCODE_LIST))
