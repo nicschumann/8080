@@ -90,3 +90,39 @@ class CCOND_Imm(Op):
 		else:
 			PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x03
 			assert PC_has_incremented, f'PC\' =/= PC + 3'
+
+
+class RCOND(Op):
+	def __init__(self, code: bytes, name: str, predicate):
+		comment_string = '\t\t; PC := {1}{0}'
+		super().__init__(code, name, ['{1}{0}'], [1,1], comment_string)
+		self.predicate = predicate 
+
+	def step(self, state: State):
+		if self.predicate(state.FLAGS):
+			PCL = state.MEM[ state.REG_UINT16[U16.SP] ]
+			PCH = state.MEM[ state.REG_UINT16[U16.SP] + 0x1 ]
+			PC = self.subop_u8_pair_to_u16(PCH, PCL)
+
+			state.REG_UINT16[U16.PC] = PC
+			state.REG_UINT16[U16.SP] += 0x2
+
+
+	def test(self, preop_state: State, postop_state: State):
+		if self.predicate(preop_state.FLAGS):
+			PC = preop_state.REG_UINT16[U16.PC]
+			SP = preop_state.REG_UINT16[U16.SP]
+
+			PC_prime_L = preop_state.MEM[SP]
+			PC_prime_H = preop_state.MEM[SP + 0x1]
+			PC_prime = (PC_prime_H << 8) | PC_prime_L
+
+			PC_has_returned = postop_state.REG_UINT16[U16.PC] == PC_prime
+			SP_has_incremented = postop_state.REG_UINT16[U16.SP] == SP + 0x2
+
+			assert PC_has_returned, 'PC\' =/= MEM[SP + 1]|MEM[SP]'
+			assert SP_has_incremented, 'SP\' =/= SP + 2'
+
+		else:
+			PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x01
+			assert PC_has_incremented, f'PC\' =/= PC + 3'

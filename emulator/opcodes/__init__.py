@@ -275,6 +275,18 @@ OPCODE_LIST = [
 	CCOND_Imm(0xE4, 'cpo', lambda FLAGS: not FLAGS[F.P]),
 	CCOND_Imm(0xF4, 'cp', lambda FLAGS: not FLAGS[F.S]),
 
+	RCOND(0xC9, 'ret', lambda FLAGS: True),
+	RCOND(0xC8, 'rz', lambda FLAGS: FLAGS[F.Z]),
+	RCOND(0xD8, 'rc', lambda FLAGS: FLAGS[F.CY]),
+	RCOND(0xE8, 'rpe', lambda FLAGS: FLAGS[F.P]),
+	RCOND(0xF8, 'rm', lambda FLAGS: FLAGS[F.S]),
+	RCOND(0xC0, 'rnz', lambda FLAGS: not FLAGS[F.Z]),
+	RCOND(0xD0, 'rnc', lambda FLAGS: not FLAGS[F.CY]),
+	RCOND(0xE0, 'rpo', lambda FLAGS: not FLAGS[F.P]),
+	RCOND(0xF0, 'rp', lambda FLAGS: not FLAGS[F.S]),
+	
+	
+
 ]
 
 NEW_OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))
