@@ -26,7 +26,7 @@ BRANCH_OPCODES = [
 	'rnc', 'rc', 'rpo',
 	'rpe', 'rp', 'rm',
 
-	'rst'
+	'rst', 'pchl'
 ]
 
 OPCODES = list(filter(lambda op: op.name in BRANCH_OPCODES, OPCODE_LIST))

@@ -293,6 +293,8 @@ OPCODE_LIST = [
 	RST(0xDF),
 	RST(0xEF),
 	RST(0xFF),
+
+	PCHL(0xE9),
 	
 	
 

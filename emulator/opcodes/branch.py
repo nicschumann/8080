@@ -94,8 +94,8 @@ class CCOND_Imm(Op):
 
 class RCOND(Op):
 	def __init__(self, code: bytes, name: str, predicate):
-		comment_string = '\t\t; PC := {1}{0}'
-		super().__init__(code, name, ['{1}{0}'], [1,1], comment_string)
+		comment_string = '\t\t; PC := (SP)(SP + 1); SP := SP + 2'
+		super().__init__(code, name, [], [], comment_string)
 		self.predicate = predicate 
 
 	def step(self, state: State):
@@ -134,7 +134,7 @@ class RST(Op):
 		data = code & 0x38 # 0b00111000 ; this is the addr of the new PC
 		comment_code = data >> 3
 		comment_string = f'\t\t; PC := {hex(data)} (addr #{comment_code})'
-		super().__init__(code, 'rst', [f'#{comment_code}'], [1,1], comment_string)
+		super().__init__(code, 'rst', [f'#{comment_code}'], [], comment_string)
 		self.addr = data
 
 	def step(self, state: State):
@@ -161,5 +161,20 @@ class RST(Op):
 		assert PCL_is_on_stack, f'SP\'[SP - 2] =/= PC[7:0]'
 		assert PCH_is_on_stack, f'SP\'[SP - 1] =/= PC[15:8]'
 		assert SP_has_decremented, 'SP\' =/= SP - 2'
+
+
+class PCHL(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t; PC := HL'
+		super().__init__(code, 'pchl', [], [], comment_string)
+
+	def step(self, state: State):
+		addr = self.subop_addr_from_HL(state)
+		state.REG_UINT16[U16.PC] = addr
+
+	def test(self, preop_state: State, postop_state: State):
+		addr = (preop_state.REG_UINT8[U8.H] << 8) | preop_state.REG_UINT8[ U8.L ]
+		PC_has_jumped = postop_state.REG_UINT16[U16.PC] == addr
+		assert PC_has_jumped, f'PC\' =/= HL'
 
 
