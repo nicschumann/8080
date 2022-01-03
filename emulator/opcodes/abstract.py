@@ -60,7 +60,7 @@ class Op:
 		state.FLAGS[ F.P ] = True if (result & 0xFF) % 2 == 0 else False 
 		
 		if CY:
-			state.FLAGS[ F.CY ] = True if result > 0xFF else False
+			state.FLAGS[ F.CY ] = True if result > 0xFF or result < 0x00 else False
 
 
 	def subop_add(self, *arguments):
@@ -74,6 +74,9 @@ class Op:
 
 	def subop_xor(self, *arguments):
 		return reduce(lambda a,b: a ^ b, map(int, arguments))
+
+	def subop_or(self, *arguments):
+		return reduce(lambda a,b: a | b, map(int, arguments))
 
 
 

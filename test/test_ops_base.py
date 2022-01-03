@@ -18,7 +18,7 @@ def get_initial_state():
 
 
 	state.REG_UINT8[ U8.A ] = 0x10
-	state.REG_UINT8[ U8.B ] = 0x01
+	state.REG_UINT8[ U8.B ] = 0x10
 	state.REG_UINT8[ U8.C ] = 0x02
 	state.REG_UINT8[ U8.D ] = 0x03
 	state.REG_UINT8[ U8.E ] = 0x04

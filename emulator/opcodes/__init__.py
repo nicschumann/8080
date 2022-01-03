@@ -220,12 +220,28 @@ OPCODE_LIST = [
 	XRA_Mem(0xAE),
 	XRA_Reg(0xAF, U8.A),
 
+	ORA_Reg(0xB0, U8.B),
+	ORA_Reg(0xB1, U8.C),
+	ORA_Reg(0xB2, U8.D),
+	ORA_Reg(0xB3, U8.E),
+	ORA_Reg(0xB4, U8.H),
+	ORA_Reg(0xB5, U8.L),
+	ORA_Mem(0xB6),
+	ORA_Reg(0xB7, U8.A),
+
+	CMP_Reg(0xB8, U8.B),
+	CMP_Reg(0xB9, U8.C),
+	CMP_Reg(0xBA, U8.D),
+	CMP_Reg(0xBB, U8.E),
+	CMP_Reg(0xBC, U8.H),
+	CMP_Reg(0xBD, U8.L),
+	CMP_Mem(0xBE),
+	CMP_Reg(0xBF, U8.A),
+
 	ANI(0xE6),
+	ORI(0xF6),
 	XRI(0xEE),
-	
-
-
-
+	CPI(0xFE),
 
 ]
 
