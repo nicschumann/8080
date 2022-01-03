@@ -206,6 +206,8 @@ OPCODE_LIST = [
 	RAL(0x17),
 	RRC(0x0F),
 	RAR(0x1F),
+	CMA(0x2F),
+	CMC(0x3F),
 
 	ANA_Reg(0xA0, U8.B),
 	ANA_Reg(0xA1, U8.C),

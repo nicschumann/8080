@@ -26,20 +26,14 @@ class Op:
 	def test(self, preop_state: State, postop_state: State):
 		assert False, f"[{self.code}] {self.name}: test unimplemented!"
 
-	
-
 	def disassembly_data(self):
 		return [self.name, self.str_args, self.comment], self.byte_arg_counts
 
 	def get_name(self):
 		return f'{hex(self.code)}: {self.name} {", ".join(self.str_args)}'
 
-
-	
 	def mem_invariant(self, preop_state: State, postop_state: State):
 		return np.all(preop_state.MEM == postop_state.MEM)
-
-	
 
 	def subop_u8_pair_to_u16(self, high, low):
 		return high << 8 | low
@@ -61,7 +55,6 @@ class Op:
 		
 		if CY:
 			state.FLAGS[ F.CY ] = True if result > 0xFF or result < 0x00 else False
-
 
 	def subop_add(self, *arguments):
 		return reduce(lambda a,b: a + b, map(int, arguments))

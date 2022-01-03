@@ -16,7 +16,8 @@ from test.test_ops_base import get_initial_state, get_op_name
 LOGICAL_OPCODES = [
 	'ana', 'ani', 'xra', 'xri',
 	'ora', 'ori', 'cmp', 'cpi',
-	'rlc', 'rrc', 'ral', 'rar'
+	'rlc', 'rrc', 'ral', 'rar',
+	'cma', 'cmc'
 ]
 
 OPCODES = list(filter(lambda op: op.name in LOGICAL_OPCODES, OPCODE_LIST))

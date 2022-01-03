@@ -412,3 +412,31 @@ class RAR(Op):
 		assert A_low_bit_is_CY, 'A\'_7 == CY'
 		assert CY_is_set, 'CY\' =/= A_0'
 
+
+class CMA(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; A := ~A'
+		super().__init__(code, 'cma', [], [], comment_string)
+
+	def step(self, state: State):
+		state.REG_UINT8[U8.A] = ~state.REG_UINT8[U8.A] & 0xFF
+
+
+	def test(self, preop_state: State, postop_state: State):
+		A_is_A_comp = ~preop_state.REG_UINT8[U8.A] & 0xFF == postop_state.REG_UINT8[U8.A]
+		assert A_is_A_comp, 'A\' =/= ~A'
+
+class CMC(Op):
+	def __init__(self, code: bytes):
+		comment_string = '\t\t\t; CY := ~CY'
+		super().__init__(code, 'cmc', [], [], comment_string)
+
+	def step(self, state: State):
+		state.FLAGS[F.CY] = not state.FLAGS[F.CY]
+
+
+	def test(self, preop_state: State, postop_state: State):
+		CY_is_CY_comp = (not preop_state.FLAGS[F.CY]) == postop_state.FLAGS[F.CY]
+		assert CY_is_CY_comp, 'CY\' =/= ~CY'
+
+
