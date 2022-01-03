@@ -182,12 +182,15 @@ class IN_Imm(Op):
 		super().__init__(code, 'in', ['{0}'], [1], comment_string)
 
 	def step(self, state: State):
-		...
+		# skip the data byte
+		state.REG_UINT16[U16.PC] += 0x1
 
 	def test(self, preop_state: State, postop_state: State):
 		# Note(Nic): input from peripherals is not yet implemented 
 		# on this emulator...
-		assert True
+		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
+
+		assert PC_has_incremented, 'PC\' =/= PC + 2'
 
 
 class OUT_Imm(Op):
@@ -196,12 +199,15 @@ class OUT_Imm(Op):
 		super().__init__(code, 'out', ['{0}'], [1], comment_string)
 
 	def step(self, state: State):
-		...
+		# skip the data byte
+		state.REG_UINT16[U16.PC] += 0x1
 
 	def test(self, preop_state: State, postop_state: State):
 		# Note(Nic): input from peripherals is not yet implemented 
 		# on this emulator...
-		assert True
+		PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x2
+
+		assert PC_has_incremented, 'PC\' =/= PC + 2'
 
 
 class DI(Op):
