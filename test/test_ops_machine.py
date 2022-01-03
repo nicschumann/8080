@@ -14,7 +14,7 @@ from test.test_ops_base import get_initial_state, get_op_name
 
 
 MACHINE_OPCODES = [
-	'nop', 'push', 'pop'
+	'nop', 'push', 'pop', 'xthl', 'sphl'
 ]
 
 OPCODES = list(filter(lambda op: op.name in MACHINE_OPCODES, OPCODE_LIST))

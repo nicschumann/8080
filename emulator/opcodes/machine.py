@@ -129,3 +129,51 @@ class POP_PSW(Op):
 		assert SP_has_incremented, 'SP\' =/= SP + 2'
 
 
+class XTHL(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t; H <=> (SP); L <=> (SP+1)'
+		super().__init__(code, 'xthl', [], [], comment_string)
+
+	def step(self, state: State):
+		H = state.REG_UINT8[U8.H]
+		L = state.REG_UINT8[U8.L]
+		SP = state.REG_UINT16[U16.SP]
+
+		state.REG_UINT8[U8.L] = state.MEM[SP]
+		state.REG_UINT8[U8.H] = state.MEM[SP + 0x1]
+		state.MEM[SP] = L
+		state.MEM[SP + 0x1] = H
+
+	def test(self, preop_state: State, postop_state: State):
+		SP = preop_state.REG_UINT16[U16.SP]
+
+		H_is_SP_plus_1 = postop_state.REG_UINT8[U8.H] == preop_state.MEM[SP + 0x1]
+		L_is_SP = postop_state.REG_UINT8[U8.L] == preop_state.MEM[SP]
+		SP_plus_1_is_H = postop_state.MEM[SP + 0x1] == preop_state.REG_UINT8[U8.H]
+		SP_is_L = postop_state.MEM[SP] == preop_state.REG_UINT8[U8.L]
+
+		assert H_is_SP_plus_1, 'H\' =/= MEM[SP+1]'
+		assert L_is_SP, 'L\' =/= MEM[SP]'
+		assert SP_plus_1_is_H, 'MEM\'[SP+1] =/= H'
+		assert SP_is_L, 'MEM\'[SP] = L'
+
+
+class SPHL(Op):
+	def __init__(self, code: bytes):
+		comment_string = f'\t\t; H <=> (SP); L <=> (SP+1)'
+		super().__init__(code, 'sphl', [], [], comment_string)
+
+	def step(self, state: State):
+		addr = self.subop_addr_from_HL(state)
+		state.REG_UINT16[U16.SP] = addr
+
+
+	def test(self, preop_state: State, postop_state: State):
+		addr = (preop_state.REG_UINT8[U8.H] << 8) | preop_state.REG_UINT8[U8.L]
+
+		SP_has_jumped = postop_state.REG_UINT16[U16.SP] == addr
+
+		assert SP_has_jumped, 'SP\' =/= (HL)'
+
+
+

@@ -307,6 +307,9 @@ OPCODE_LIST = [
 	POP_Reg(0xD1, U8.D, U8.E),
 	POP_Reg(0xE1, U8.H, U8.L),
 	POP_PSW(0xF1),
+
+	XTHL(0xE3),
+	SPHL(0xF9)
 	
 	
 
