@@ -126,3 +126,40 @@ class RCOND(Op):
 		else:
 			PC_has_incremented = postop_state.REG_UINT16[U16.PC] == preop_state.REG_UINT16[U16.PC] + 0x01
 			assert PC_has_incremented, f'PC\' =/= PC + 3'
+
+
+
+class RST(Op):
+	def __init__(self, code: bytes):
+		data = code & 0x38 # 0b00111000 ; this is the addr of the new PC
+		comment_code = data >> 3
+		comment_string = f'\t\t; PC := {hex(data)} (addr #{comment_code})'
+		super().__init__(code, 'rst', [f'#{comment_code}'], [1,1], comment_string)
+		self.addr = data
+
+	def step(self, state: State):
+		SP = state.REG_UINT16[U16.SP]
+		PCH, PCL = self.subop_u16_to_u8_pair(state.REG_UINT16[U16.PC])
+		state.MEM[SP - 0x1] = PCH
+		state.MEM[SP - 0x2] = PCL
+		state.REG_UINT16[U16.SP] -= 0x2
+		state.REG_UINT16[U16.PC] = self.addr
+
+
+	def test(self, preop_state: State, postop_state: State):
+		PC = preop_state.REG_UINT16[U16.PC]
+		SP = preop_state.REG_UINT16[U16.SP]
+		PCL = (PC + 0x1) & 0xFF
+		PCH = (PC + 0x1) >> 8
+
+		PC_has_jumped = postop_state.REG_UINT16[U16.PC] == self.addr
+		PCL_is_on_stack = postop_state.MEM[SP - 0x2] == PCL
+		PCH_is_on_stack = postop_state.MEM[SP - 0x1] == PCH
+		SP_has_decremented = postop_state.REG_UINT16[U16.SP] == SP - 0x2
+
+		assert PC_has_jumped, f'PC\' =/= {self.addr}'
+		assert PCL_is_on_stack, f'SP\'[SP - 2] =/= PC[7:0]'
+		assert PCH_is_on_stack, f'SP\'[SP - 1] =/= PC[15:8]'
+		assert SP_has_decremented, 'SP\' =/= SP - 2'
+
+

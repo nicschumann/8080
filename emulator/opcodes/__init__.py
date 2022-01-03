@@ -284,6 +284,15 @@ OPCODE_LIST = [
 	RCOND(0xD0, 'rnc', lambda FLAGS: not FLAGS[F.CY]),
 	RCOND(0xE0, 'rpo', lambda FLAGS: not FLAGS[F.P]),
 	RCOND(0xF0, 'rp', lambda FLAGS: not FLAGS[F.S]),
+
+	RST(0xC7),
+	RST(0xD7),
+	RST(0xE7),
+	RST(0xF7),
+	RST(0xCF),
+	RST(0xDF),
+	RST(0xEF),
+	RST(0xFF),
 	
 	
 
