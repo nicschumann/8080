@@ -55,10 +55,15 @@ class MemoryPanel():
 		offset, bytes_per_line = self.get_offset()	
 		starting_addr = max(self.target_addr - offset, 0)
 		current_addr = starting_addr
+		PC_addr = state.REG_UINT16[U16.PC]
 
 		for row in range(1, H - 1):
 			
-			self.window.attron(curses.A_DIM)
+			if current_addr <= PC_addr and current_addr + bytes_per_line > PC_addr:
+				self.window.attron(curses.color_pair(2))
+			else:
+				self.window.attron(curses.color_pair(4))
+
 			self.window.addstr(row, 1, f'{int_to_hex(current_addr, fill=4)}:')
 			self.window.attrset(0)
 
@@ -108,9 +113,11 @@ def ui_main(stdscr):
 
 	curses.start_color()
 	# program counter color
-	curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+	curses.init_color(17, 500,500,500)
+	curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_CYAN)
 	curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
 	curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+	curses.init_pair(4, 17, curses.COLOR_BLACK)
 	curses.curs_set(0)
 	H, W = stdscr.getmaxyx()
 
