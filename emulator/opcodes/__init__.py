@@ -320,9 +320,9 @@ OPCODE_LIST = [
 	HLT(0x76),
 ]
 
-NEW_OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))
+OPCODE_TABLE = dict(map(lambda op: (op.code, op), OPCODE_LIST))
 
-OPCODE_TABLE = {
+OLD_OPCODE_TABLE = {
 			 # format string for printing opcode, structure of args to read.
 	b'\x00': [['nop', [], ''], []],
 	b'\x01': [['lxi', ['B', '{1}{0}'], '\t\t; B := data:{1}; C := data:{0}'], [1,1]],

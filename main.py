@@ -2,9 +2,6 @@ from sys import argv
 from disassembler import disassemble
 from emulator import emulate_from_rom
 
-from emulator.opcodes import NEW_OPCODE_TABLE
-
-
 # Run as: python -m main
 
 

@@ -20,6 +20,20 @@ class Op:
 		self.byte_arg_counts = byte_arg_counts
 		self.comment = comment
 
+	def get_tokens(self, state: State, addr: int):
+		assert state.MEM[addr] == self.code, f'Error: Tried to disassemble op {state.MEM[addr]} as {self.code}.'
+
+		arg_bytes = []
+		arg_offset = 1
+		for _ in self.byte_arg_counts:
+			arg_bytes.append(f'{int(state.MEM[addr + arg_offset]):02x}')
+			arg_offset += 1
+
+		formatted_args = list(map(lambda s: s.format(*arg_bytes), self.str_args))
+
+		return self.name, formatted_args, self.comment
+
+
 	def step(self, state: State):
 		assert False, f"[{self.code}] {self.name}: step unimplemented!"
 

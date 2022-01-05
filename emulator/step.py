@@ -3,7 +3,7 @@ from .state import Uint16Registers as U16
 from .state import Uint8Registers as U8
 from .state import FlagsRegisters as F
 
-from .opcodes import NEW_OPCODE_TABLE
+from .opcodes import OPCODE_TABLE
 from .opcodes.abstract import UnimplementedOp
 
 
@@ -12,7 +12,7 @@ def decode_op(state: State):
 	opcode = state.MEM[pc]
 
 	try:
-		return NEW_OPCODE_TABLE[opcode]
+		return OPCODE_TABLE[opcode]
 
 	except KeyError:
 		return UnimplementedOp()

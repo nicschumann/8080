@@ -1,0 +1,8 @@
+
+
+
+
+
+LINE_FG_COLOR_ID = 25
+LINE_FG_COLOR = (500, 500, 500)
+
