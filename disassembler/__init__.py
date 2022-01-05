@@ -1,4 +1,4 @@
-from emulator.opcodes import OPCODE_TABLE, NEW_OPCODE_TABLE
+from emulator.opcodes import OPCODE_TABLE, OLD_OPCODE_TABLE
 
 from .colors import set_format_and_color
 
@@ -19,13 +19,13 @@ def disassemble(file):
 		int_opcode = int.from_bytes(opcode, 'big')
 
 		try:
-			if int_opcode in NEW_OPCODE_TABLE:
-				op = NEW_OPCODE_TABLE[int_opcode]
+			if int_opcode in OPCODE_TABLE:
+				op = OPCODE_TABLE[int_opcode]
 				dissasembly, argsizes = op.disassembly_data()
 
 			else:
 				print(f'missing opcode: {int_opcode}')
-				dissasembly, argsizes = OPCODE_TABLE[opcode]
+				dissasembly, argsizes = OLD_OPCODE_TABLE[opcode]
 
 		except KeyError:
 			print(f'\n[Disassembler Error] Unrecognized opcode: {opcode.hex()}')
