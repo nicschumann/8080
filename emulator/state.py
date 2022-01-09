@@ -74,6 +74,17 @@ class State:
 	MEM : np.array = np.zeros(MEMSIZE).astype(np.uint8) # 8KB mem
 
 
+	def processor_status_word(self):
+		PSW = int(self.FLAGS[FlagsRegisters.CY]) \
+			| 2 \
+			| (int(self.FLAGS[FlagsRegisters.P]) << 2) \
+			| (int(self.FLAGS[FlagsRegisters.AC]) << 4) \
+			| (int(self.FLAGS[FlagsRegisters.Z]) << 6) \
+			| (int(self.FLAGS[FlagsRegisters.S]) << 7) \
+
+		return PSW
+
+
 	def clone(self):
 		new_state = State()
 		new_state.REG_UINT8 = self.REG_UINT8.copy()

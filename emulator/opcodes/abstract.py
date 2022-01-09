@@ -103,6 +103,9 @@ class Op:
 	def subop_or(self, *arguments):
 		return reduce(lambda a,b: a | b, map(int, arguments))
 
+	def __len__(self):
+		return 1 + sum(self.byte_arg_counts)
+
 
 
 

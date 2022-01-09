@@ -7,6 +7,7 @@ from emulator.state import Uint16Registers as U16
 
 from emulator.step import step
 from .utils import int_to_hex
+from .colors import GRAY_COLOR
 
 class MemoryPanel():
 	def __init__(self, y, x, lines, cols):
@@ -59,7 +60,7 @@ class MemoryPanel():
 			if current_addr <= PC_addr and current_addr + bytes_per_line > PC_addr:
 				self.window.attron(curses.color_pair(2))
 			else:
-				self.window.attron(curses.color_pair(4))
+				self.window.attron(curses.color_pair(GRAY_COLOR))
 
 			self.window.addstr(row, 1, f'{int_to_hex(current_addr, fill=4)}:')
 			self.window.attrset(0)

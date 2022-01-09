@@ -9,6 +9,8 @@ from emulator.step import step
 
 from .memory import MemoryPanel
 from .disassembly import DisassemblyPanel
+from .registers import RegisterPanel
+from .colors import init_colors
 
 
 
@@ -20,13 +22,9 @@ def ui_main(stdscr):
 	stdscr.clear()
 	stdscr.refresh()
 
-	curses.start_color()
-	# program counter color
-	curses.init_color(17, 500,500,500)
-	curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_CYAN)
-	curses.init_pair(2, curses.COLOR_CYAN, curses.COLOR_BLACK)
-	curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
-	curses.init_pair(4, 17, curses.COLOR_BLACK)
+	init_colors()
+
+
 	curses.curs_set(0)
 	H, W = stdscr.getmaxyx()
 	memory_panel_width = min(W // 2, 56)
@@ -36,6 +34,7 @@ def ui_main(stdscr):
 
 	memory_panel = MemoryPanel(0, 0, H, memory_panel_width)
 	dissasembly_panel = DisassemblyPanel(0, memory_panel_width, 5, W - memory_panel_width)
+	register_panel = RegisterPanel(H - 13, memory_panel_width, 14, W - memory_panel_width)
 
 	while k != ord('q'):
 
@@ -43,6 +42,9 @@ def ui_main(stdscr):
 
 		memory_panel.render(state)
 		dissasembly_panel.render(state)
+		register_panel.render(state)
+
+		register_panel.set_size(14, W - memory_panel_width)
 
 		k = stdscr.getch()
 
