@@ -21,7 +21,7 @@ One issue is that memory is just really, really big (even at the 8080's tiny 16-
 The base directory needs to be part of the `PYTHONPATH`, so run this script as a module:
 
 ```sh
-python -m main # rather than python main.py
+python -m edit # rather than python edit.py
 ```
 
 Similarly, run `pytest` as a module to go test:

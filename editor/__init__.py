@@ -33,7 +33,7 @@ def ui_main(stdscr):
 	state = initialize_state_from_rom(file.read())
 
 	memory_panel = MemoryPanel(0, 0, H, memory_panel_width)
-	dissasembly_panel = DisassemblyPanel(0, memory_panel_width, 5, W - memory_panel_width)
+	dissasembly_panel = DisassemblyPanel(0, memory_panel_width, H - 13, W - memory_panel_width)
 	register_panel = RegisterPanel(H - 13, memory_panel_width, 14, W - memory_panel_width)
 
 	while k != ord('q'):
@@ -54,6 +54,9 @@ def ui_main(stdscr):
 			
 			if memory_panel.is_out_of_frame(state.REG_UINT16[U16.PC]):
 				memory_panel.set_target_address(state.REG_UINT16[U16.PC])
+
+			if dissasembly_panel.is_out_of_frame(state.REG_UINT16[U16.PC]):
+				dissasembly_panel.set_target_address(state.REG_UINT16[U16.PC])
 
 
 
