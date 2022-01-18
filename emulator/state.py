@@ -127,10 +127,10 @@ class State:
 
 
 
-def initialize_state_from_rom(data: bytes):
+def initialize_state_from_rom(data: bytes, base_pointer: int = 0):
 	
 	state = State()
 	ROM = np.frombuffer(data, dtype=np.uint8)
-	state.MEM[:ROM.shape[0]] = ROM
+	state.MEM[base_pointer:ROM.shape[0]] = ROM
 
 	return state

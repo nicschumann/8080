@@ -1,6 +1,7 @@
 import curses
 import curses.panel as panel
 
+from emulator.trace import Trace
 from emulator.state import State, initialize_state_from_rom
 from emulator.state import Uint8Registers as U8
 from emulator.state import Uint16Registers as U16
@@ -31,6 +32,7 @@ def ui_main(stdscr):
 
 	file = open('roms/invaders/invaders', 'rb')
 	state = initialize_state_from_rom(file.read())
+	trace = Trace(state)
 
 	memory_panel = MemoryPanel(0, 0, H, memory_panel_width)
 	dissasembly_panel = DisassemblyPanel(0, memory_panel_width, H - 13, W - memory_panel_width)
@@ -40,23 +42,28 @@ def ui_main(stdscr):
 
 		H, W = stdscr.getmaxyx()
 
-		memory_panel.render(state)
-		dissasembly_panel.render(state)
-		register_panel.render(state)
+		memory_panel.render(trace.current_state())
+		dissasembly_panel.render(trace.current_state())
+		register_panel.render(trace.current_state())
 
 		register_panel.set_size(14, W - memory_panel_width)
 
 		k = stdscr.getch()
 
-		if k == ord('s'):
-			
-			step(state)
-			
-			if memory_panel.is_out_of_frame(state.REG_UINT16[U16.PC]):
-				memory_panel.set_target_address(state.REG_UINT16[U16.PC])
+		if k == ord('w') or k == ord('s'):
 
-			if dissasembly_panel.is_out_of_frame(state.REG_UINT16[U16.PC]):
-				dissasembly_panel.set_target_address(state.REG_UINT16[U16.PC])
+			if k == ord('w'):
+				trace.step_forward()
+			else:
+				trace.step_backward()
+
+			s = trace.current_state()
+			
+			if memory_panel.is_out_of_frame(s.REG_UINT16[U16.PC]):
+				memory_panel.set_target_address(s.REG_UINT16[U16.PC])
+
+			if dissasembly_panel.is_out_of_frame(s.REG_UINT16[U16.PC]):
+				dissasembly_panel.set_target_address(s.REG_UINT16[U16.PC])
 
 
 
