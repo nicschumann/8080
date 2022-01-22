@@ -37,6 +37,7 @@ class EditorState():
 		self.is_running = True
 
 		self.partial_input = ''
+		self.command_history = []
 
 
 	def render(self, trace):
@@ -58,7 +59,8 @@ class EditorState():
 		self.dissasembly_panel.render(state)
 		self.register_panel.render(state)
 
-		self.input_panel.render(self.partial_input)
+		last_command_name = self.command_history[-1].longname if len(self.command_history) else ''
+		self.input_panel.render(self.partial_input, last_command_name)
 	
 
 	def handle_input(self):
@@ -67,18 +69,33 @@ class EditorState():
 		KEY_DEL = 127
 		KEY_NEWLINE = 10
 
+		if k == KEY_NEWLINE and self.partial_input == '':
+			# in this case, we want to repeat the last command.
+			# just pull it out of the command_history, and we're good.
+			try:
+				command = self.command_history[-1]
+				return command
+
+			except IndexError:
+				return None				
+
+
 		if k == KEY_NEWLINE:
 			# look up the current input in the list of commands.
 			# execute the command. Same basic structure as the opcode data
 			try:
 				command = EDITOR_COMMAND_TABLE[self.partial_input]
+				self.command_history.append(command)
+				self.partial_input = '' # clear input.
 				return command
 
 			except KeyError:
 				return None
 
+
 		if k == KEY_DEL:
 			self.partial_input = self.partial_input[:len(self.partial_input) - 1]
+
 
 		else:
 			self.partial_input += chr(k)
