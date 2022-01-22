@@ -1,7 +1,9 @@
 import curses
 
 
+
 GRAY_COLOR = 17
+GRAY_BG_COLOR = 18
 GRAY_FG = (350, 350, 350)
 
 LINE_FG_COLOR = 25
@@ -18,6 +20,9 @@ REG_PC_FG = (000, 700, 800)
 
 REG_SP_COLOR = 29
 REG_SP_FG = (700, 800, 000)
+
+WHITE_BG_COLOR = 30
+
 
 REG_U8_COLORS = [
 	REG_A_COLOR,
@@ -52,7 +57,11 @@ def init_colors():
 	curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
 	
 	curses.init_pair(GRAY_COLOR, GRAY_COLOR, curses.COLOR_BLACK)
+	curses.init_pair(GRAY_BG_COLOR, curses.COLOR_BLACK, GRAY_COLOR)
+	curses.init_pair(WHITE_BG_COLOR, curses.COLOR_BLACK, curses.COLOR_WHITE)
+
 	curses.init_pair(REG_A_COLOR, REG_A_COLOR, curses.COLOR_BLACK)
 	curses.init_pair(REG_U8_COLOR, REG_U8_COLOR, curses.COLOR_BLACK)
 	curses.init_pair(REG_SP_COLOR, REG_SP_COLOR, curses.COLOR_BLACK)
 	curses.init_pair(REG_PC_COLOR, REG_PC_COLOR, curses.COLOR_BLACK)
+
