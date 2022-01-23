@@ -1,8 +1,10 @@
+from editor.commands.abstract import Command
 
-class StepCommand():
-	def __init__(self):
-		self.name = 's'
-		self.longname = 'step'
 
+class StepCommand(Command):
+	name : str = 's'
+	longname : str = 'step'
+		
 	def execute(self, trace, editor):
-		trace.step_forward()
+		for i in range(self.repeats):
+			trace.step_forward()

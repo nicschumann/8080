@@ -1,18 +1,20 @@
 # Tiny 8080
 
-A python-based Intel `8080` disassembler and emulator. All opcodes tested.
+A python-based Intel `8080` disassembler and emulator. (All opcodes tested, with the exception of `daa`, because I don't have a good test routine for fixed-point decimal arithmetic).
 
-## User Interface Notes
+## Editor
 
-I want to build a UI into this emulator that makes it as easy as possible to understand what's going on in a given 8080 state. For now, I'll focus on just making the state legible. As a start, this means seeing 
+The editor module is a text-based, interactive `curses` application. It has a number of different windows and views into the state, and accepts a variety of different commands for manipulating both the trace of the program, and the editor state.
 
-*(Note for posterity: Started writing this right after I finished implemented and testing the 244 basic opcodes for the 8080. Now I have a rom, an emulator, and a super dumb state dump. I can step the state, and watch the register file update. I have no idea what it's doing, really. I need tools to make this system comprehensible.)*
+My goal is to have a flexible, bidirectional environment for navigating through a program state. Currently, my traces support bi-directional stepping: Obviously, you cans step the state forward by stepping the emulator. Whenever the emulator steps forward, a diff object is created. The program trace in itself is essentially a sequence of state-diffs; since we capture state diffs, navigating bidirectionally through the program is possible.
 
-### Understanding the Current State
+The editor is handled through text-based input. The following is a table of the commands available:
 
-To understand what's happening in a current state, you need to see what's happening in the register file and what's happening in memory. Ideally, you would also be able to how the two are connected... where the stack pointer points, where the program counter points, where the register pairs point.
+| implemented | input | command name | description |
+| - | - | - | - |
+| ✓ | `q` | quit | Stops the emulator running and quits the program. |
+| ✓ | `s [steps]` | step | Steps the emulator forward by `[steps]` instruction. Records a diff between the state before the step command and the state after, and appends it to the trace. |
 
-One issue is that memory is just really, really big (even at the 8080's tiny 16-bit address space). How do we dump out memory? One option is to display it as a 2D array of lenth-k byte cells (depending on the zoom level). Then we could implement commands to reshape, or seek through memory. Good place to start?
 
 
 
@@ -32,7 +34,7 @@ python -m pytest -v # -v optional; shows individual test identities
 
 ### Testing Note: Opcodes
 
-The intel 8080 processor has `244` unique opcodes, out of a possible 256. The remaining 12 unallocated opcodes are aliases for `nop`, `jmp`, `call`, and `ret`. They should not be used. If you run `python -m pytest` to test all the opcodes, it will report `243` opcodes tested. This is because a test for the `daa` instruction (Decimal Adjust Accumulator, for doing 4-bit binary coded decimal math) is not implemented on this emulator as of yet. Once I have a compelling test case for `daa`, I'll add the test.
+The intel 8080 processor has 244 unique opcodes, out of a possible 256. The remaining 12 unallocated opcodes are aliases for `nop`, `jmp`, `call`, and `ret`. They should not be used. If you run `python -m pytest` to test all the opcodes, it will report `243` opcodes tested. This is because a test for the `daa` instruction (Decimal Adjust Accumulator, for doing 4-bit binary coded decimal math) is not implemented on this emulator as of yet. Once I have a compelling test case for `daa`, I'll add the test.
 
 ## References
 

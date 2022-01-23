@@ -15,6 +15,7 @@ from .registers import RegisterPanel
 from .colors import init_colors
 
 from .commands import EDITOR_COMMAND_TABLE
+from .commands import parse_command_string
 
 
 
@@ -84,7 +85,11 @@ class EditorState():
 			# look up the current input in the list of commands.
 			# execute the command. Same basic structure as the opcode data
 			try:
-				command = EDITOR_COMMAND_TABLE[self.partial_input]
+				count, command_name, args = parse_command_string(self.partial_input)
+				command_template = EDITOR_COMMAND_TABLE[command_name]
+				# instantiate the command template with any args / repeats
+				command = command_template(count, args) 
+
 				self.command_history.append(command)
 				self.partial_input = '' # clear input.
 				return command
